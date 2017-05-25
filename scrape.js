@@ -12,8 +12,14 @@ async function getHotsData (req, res) {
     const heroCount = $('tbody tr').length - 1;
 
     for (let i = 0; i < heroCount; i++) {
-      const hero = {};
-      hero.name = $(`#__${i}`).find('a').attr('title');
+      const data = $(`#__${i}`);
+      const hero = {
+        name: data.find('td:nth-child(2)').text(),
+        gamesPlayed: data.find('td:nth-child(3)').text(),
+        gamesBanned: data.find('td:nth-child(4)').text(),
+        popularity: data.find('td:nth-child(5)').text(),
+        winPercentage: data.find('td:nth-child(6)').text(),
+      }
       heroData.push(hero);
     }
     const parsedData = JSON.stringify(heroData);
