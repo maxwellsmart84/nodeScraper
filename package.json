@@ -6,8 +6,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "express": "^4.15.3",
-    "request": "^2.81.0",
-    "vsc": "^0.1.10"
+    "request": "^2.81.0"
   },
   "devDependencies": {},
   "scripts": {

@@ -1,0 +1,1537 @@
+
+
+
+<!DOCTYPE html>
+<html>
+    <head><meta charset="utf-8" /><title>
+	Heroes of the Storm (HotS): Home
+</title><meta name="keywords" content="Heroes of the Storm, HOTS, HOTS Logs, HOTSLogs, MMR, Ranking, Leaderboard, Replay, Replay File, Download Replay, Hero, Statistics, Matchmaking, Matchmaking Rating, Talent, Data" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link href="/favicon.ico?v=2" rel="shortcut icon" type="image/x-icon" />
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="//cdn.datatables.net/v/dt/dt-1.10.12/cr-1.3.2/fh-3.1.2/datatables.min.js"></script><link href="//cdn.datatables.net/u/dt/fh-3.1.2/datatables.min.css" rel="stylesheet" /><link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" /><link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" /><link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" /><link href="/assets/css/style-blue.css?v=4" rel="stylesheet" /><link id="linkCSSDarkTheme" href="/assets/css/dark-theme.css?v=7" rel="stylesheet" /><script type="text/javascript">
+
+            (function (i, s, o, g, r, a, m) {
+                i["GoogleAnalyticsObject"] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+            ga("create", "UA-53777913-1", "auto");
+            ga("require", "displayfeatures");
+            ga("send", "pageview");
+
+            var RadGridReorderStripes;
+            var IsFixedHeaderAppropriate = true && document.documentElement.clientWidth >= 1300;
+
+            // Set DataTable Defaults
+            $.extend($.fn.dataTable.defaults, {
+                paging: false,
+                info: false,
+                colReorder: true,
+                fixedHeader: true,
+                columnDefs: [{ type: "smart", orderSequence: [ "desc", "asc" ], targets: "_all" }],
+                buttons: [ { extend: "csv", text: "Export", className: "btn btn-primary" } ],
+                dom: "lfrtipB"
+            });
+
+            $.extend($.fn.dataTableExt.oSort, {
+                "smart-asc": function (a, b) {
+                    if (a === b)
+                        return 0;
+
+                    if (a === "&nbsp;")
+                        return 1;
+                    else if (b === "&nbsp;")
+                        return -1;
+
+                    if (a.length === 8 && a.charAt(2) === ":" && a.charAt(5) === ":" &&
+                        b.length === 8 && b.charAt(2) === ":" && b.charAt(5) === ":")
+                    {
+                        // Timespan format
+                        parseA = (parseInt(a.substring(0, 2)) * 3600) + (parseInt(a.substring(3, 5)) * 60) + parseInt(a.substring(6, 8));
+                        parseB = (parseInt(b.substring(0, 2)) * 3600) + (parseInt(b.substring(3, 5)) * 60) + parseInt(b.substring(6, 8));
+                    }
+                    else
+                    {
+                        // Check for Percent format, and handle international formatting
+                        var parseA = parseFloat(a.replace(",", "").replace(".", "."));
+                        var parseB = parseFloat(b.replace(",", "").replace(".", "."));
+
+                        if (isNaN(parseA))
+                        {
+                            // Text format
+                            parseA = a;
+
+                            // Remove HTML so we are only sorting on visible text
+                            var parseHTMLA = $.parseHTML(parseA);
+                            if (typeof parseHTMLA !== "undefined" && parseHTMLA.length === 1)
+                                parseA = parseHTMLA[0].textContent.split('\n')[0];
+
+                            parseA = parseA.toLowerCase();
+
+                            // Check for Percent format once more
+                            var parseAInner = parseFloat(parseA.replace(",", "").replace(".", "."));
+                            if (!isNaN(parseAInner))
+                                parseA = parseAInner;
+                        }
+
+                        if (isNaN(parseB))
+                        {
+                            // Text format
+                            parseB = b;
+
+                            // Remove HTML so we are only sorting on visible text
+                            var parseHTMLB = $.parseHTML(parseB);
+                            if (typeof parseHTMLB !== "undefined" && parseHTMLB.length === 1)
+                                parseB = parseHTMLB[0].textContent.split('\n')[0];
+
+                            parseB = parseB.toLowerCase();
+
+                            // Check for Percent format once more
+                            var parseBInner = parseFloat(parseB.replace(",", "").replace(".", "."));
+                            if (!isNaN(parseBInner))
+                                parseB = parseBInner;
+                        }
+                    }
+
+                    if (parseA > parseB)
+                        return 1;
+                    else
+                        return -1;
+                },
+
+                "smart-desc": function (a, b) {
+                    if (a === b)
+                        return 0;
+
+                    if (a === "&nbsp;")
+                        return 1;
+                    else if (b === "&nbsp;")
+                        return -1;
+
+                    if (a.length === 8 && a.charAt(2) === ":" && a.charAt(5) === ":" &&
+                        b.length === 8 && b.charAt(2) === ":" && b.charAt(5) === ":")
+                    {
+                        // Timespan format
+                        parseA = (parseInt(a.substring(0, 2)) * 3600) + (parseInt(a.substring(3, 5)) * 60) + parseInt(a.substring(6, 8));
+                        parseB = (parseInt(b.substring(0, 2)) * 3600) + (parseInt(b.substring(3, 5)) * 60) + parseInt(b.substring(6, 8));
+                    }
+                    else
+                    {
+                        // Check for Percent format, and handle international formatting
+                        var parseA = parseFloat(a.replace(",", "").replace(".", "."));
+                        var parseB = parseFloat(b.replace(",", "").replace(".", "."));
+
+                        if (isNaN(parseA))
+                        {
+                            // Text format
+                            parseA = a;
+
+                            // Remove HTML so we are only sorting on visible text
+                            var parseHTMLA = $.parseHTML(parseA);
+                            if (typeof parseHTMLA !== "undefined" && parseHTMLA.length === 1)
+                                parseA = parseHTMLA[0].textContent.split('\n')[0];
+
+                            parseA = parseA.toLowerCase();
+
+                            // Check for Percent format once more
+                            var parseAInner = parseFloat(parseA.replace(",", "").replace(".", "."));
+                            if (!isNaN(parseAInner))
+                                parseA = parseAInner;
+                        }
+
+                        if (isNaN(parseB))
+                        {
+                            // Text format
+                            parseB = b;
+
+                            // Remove HTML so we are only sorting on visible text
+                            var parseHTMLB = $.parseHTML(parseB);
+                            if (typeof parseHTMLB !== "undefined" && parseHTMLB.length === 1)
+                                parseB = parseHTMLB[0].textContent.split('\n')[0];
+
+                            parseB = parseB.toLowerCase();
+
+                            // Check for Percent format once more
+                            var parseBInner = parseFloat(parseB.replace(",", "").replace(".", "."));
+                            if (!isNaN(parseBInner))
+                                parseB = parseBInner;
+                        }
+                    }
+
+                    if (parseB > parseA)
+                        return 1;
+                    else
+                        return -1;
+                }
+            });
+
+            $(document).ready(function ()
+            {
+                // Function to Style RadGrid Stripes On DataTable Events
+                RadGridReorderStripes = function (RadGrid) {
+                    $("tr", RadGrid).removeClass("rgRow rgAltRow");
+                    $("tr.odd", RadGrid).addClass("rgRow");
+                    $("tr.even", RadGrid).addClass("rgAltRow");
+                };
+
+                // All DataTable Draw Events Should Restripe
+                $(document).on("draw.dt", "table", function () { if ($(this).hasClass("dataTable")) RadGridReorderStripes(this); })
+
+                // Set up Back to Top Link
+                $("#back-top").hide();
+                $(window).scroll(function (e) { if ($(this).scrollTop() > 100) { $('#back-top').fadeIn(); } else { $('#back-top').fadeOut(); } });
+                $('#back-top a').click(function (e) { $('body,html').animate({ scrollTop: 0 }, 500); return false; });
+
+                // Set Up Sign Out Menu Icon
+                $("#LoginStatus").html("<i class='fa fa-sign-out'></i>");
+
+                // Keep Focus on Player Search Menu Popup
+                $(".dropdown-menu input").click(function (e) { e.stopPropagation(); });
+
+                // Focus on Player Name Textbox when Clicking on Player Search
+                $(".playerSearchDropdown").click(function (e) { setTimeout(function () { $(".TextBoxPlayerSearch").focus(); }, 10); });
+
+                function PlayerSearchRedirect()
+                {
+                    window.location.href = "/PlayerSearch?Name=" + $(".TextBoxPlayerSearch").val();
+                }
+
+                $("#ButtonPlayerSearch").click(function (e) { PlayerSearchRedirect(); });
+
+                $(".TextBoxPlayerSearch").keydown(function (e) {
+                    if (e.keyCode === 13 /* Enter key */)
+                    {
+                        e.preventDefault();
+                        PlayerSearchRedirect();
+                    }
+                });
+
+                // Use mouseover popups for tooltips
+                $(document).on("mouseenter", "tr[title], img[title], div[title], tr[data-tooltip], img[data-tooltip], div[data-tooltip]", function() {
+					var title = getTitle(this);
+					if (title) {
+						addTooltip(this, title);
+					}
+            	})
+
+            	$(document).on("mouseleave", "tr[title], img[title], div[title], tr[data-tooltip], img[data-tooltip], div[data-tooltip]", function() {
+            		$(this).siblings('span').remove();
+            	})
+
+                // Adjust Datatables Fixed Header, toggling visibility if the user is switching tabs
+                $(document).on("click", "body", function (e) {
+                    setTimeout(function(){ $(".dataTable").not(".RadGridReplayCharacterScoreResults .dataTable").DataTable().fixedHeader.adjust(); }, 0);
+                });
+
+                $(document).on("init.dt", "body", function (e, settings, json) {
+                    $("div.dt-buttons").each(function() {
+                        $(this).insertAfter($(this).parent().find("input[type='search']"));
+                    });
+                });
+            });
+
+            var getTitle = function(element) {
+            	if (element.title) {
+            		element.setAttribute("data-tooltip", element.title);
+            		element.removeAttribute("title");
+            	}
+            	return element.getAttribute("data-tooltip");
+            };
+
+            var addTooltip = function(target, text) {
+            	$("> span", target).remove();
+            	var span = document.createElement("span");
+            	span.className = "titlePopup";
+            	span.innerHTML = text.replace(/^([^:]+):/, "<b>$1</b>");
+            	$(target).after(span);
+            };
+
+        </script>
+            <script src="//d3pkae9owd2lcf.cloudfront.net/mb105.gz.js?v=3"></script>
+            <script type="text/javascript">
+
+                function FillMonkeyBrokerHorizontal01() {}
+
+                function u1d89e409(src) {
+
+                	if (false)
+                	{
+						var jqueryWindow = $(window);
+                		jqueryWindow.attr("location", "/Info/AdBloc" + "k?Sour" + "ce=" + src);
+                	}
+                    else
+                        ga("send", "event", "AdFillMonkeyBroker", "Ad Blocked Acceptably", { nonInteraction: true });
+                }
+
+				try {
+					var monkeyBrokerTemp = MonkeyBroker;
+                }
+            	catch(error) {
+					u1d89e409("JavaScript Exception");
+                }
+
+            	if (typeof MonkeyBroker === "undefined")
+                    u1d89e409("MonkeyBroker Undefined");
+            	else if (typeof MonkeyBroker.regSlotsMap === "undefined")
+					u1d89e409("regSlotsMap Undefined");
+            	else if (typeof MonkeyBroker.defineSlot === "undefined")
+					u1d89e409("defineSlot Undefined");
+				else if (typeof MonkeyBroker.version === "undefined")
+					u1d89e409("version Undefined");
+                else
+                {
+
+                    var isAdExperienceLight = false;
+
+                    try {
+                        $(window).on("load", function(e) {
+                        	if (typeof pbjs === "undefined" || pbjs.libLoaded !== true)
+								u1d89e409("pbjs Undefined");
+                            else if ($(".advertisementBannerMonkeyBrokerTop").height() === 0)
+                                u1d89e409("Height 0");
+                            else
+                                setTimeout(function(){ if (typeof MonkeyBroker.slots === "undefined") u1d89e409("Slots Undefined"); }, 10000);
+
+
+                        });
+
+                        if (typeof MonkeyBroker !== "object" || typeof MonkeyBroker.addSlot === "undefined" || MonkeyBroker.addSlot.toString() === "function () {}")
+                            u1d89e409("addSlot Undefined");
+                        else if (!isAdExperienceLight)
+                            ga("send", "event", "AdFillMonkeyBroker", "Ad Displayed", { nonInteraction: true });
+                        else
+                            ga("send", "event", "AdFillMonkeyBroker", "Ad Displayed Light", { nonInteraction: true });
+                    }
+            		catch(error) {
+						u1d89e409("JavaScript Exception");
+                    }
+
+                    var windowWidth = $(window).width();
+
+                    MonkeyBroker.site = {
+                        "id": 1788,
+                        "customDomainName": "mb.zam.com",
+                        "reportBadAd": true,
+                        "lightboxCallback": function (e, t) {
+                            var userExplanation = prompt("Please explain why this advertisement is inappropriate");
+
+                            if (userExplanation !== null && userExplanation !== "")
+                            {
+                                adHistoryPostURL = e.replace("http://mb.zam.com/mb/reportBadAd", "/StatusCheck") + "&Message=" + encodeURI(userExplanation);
+
+                                LogAdHistory(null);
+
+                                var iframeAdReport = document.createElement("iframe");
+                                iframeAdReport.src = e;
+                                iframeAdReport.height = 0;
+                                iframeAdReport.width = 0;
+                                document.getElementsByTagName("body")[0].appendChild(iframeAdReport);
+
+                                t.parentNode.removeChild(t);
+
+                                alert("Thank you for your feedback, we will look into it!");
+                            }
+                        }
+                    };
+
+                    MonkeyBroker.addAttribute("mb_pc", "Home");
+					MonkeyBroker.addAttribute("mb_ri", 90);
+
+
+
+
+                    MonkeyBroker.addSlot({ slot: "topSkin", sizes: [41], rm: true, reportBadAd: false });
+
+                    var handledSkin = false;
+                    MonkeyBroker.addSlot({ slot: "sideSkin", sizes: [30], dataTag: true, reportBadAd: false });
+                    MonkeyBroker.registerSizeCallback(30, function (skin) {
+                        if (!handledSkin) {
+                            handledSkin = true;
+
+                            // Mark body as skinned
+                            $("body").removeClass("noskin");
+
+                            // Remove right ad
+                            $("#advertisementBannerMonkeyBrokerRight, #advertisementBannerMonkeyBrokerRightThin").remove();
+                            MonkeyBroker.slots["Vertical_2"] = null;
+                            MonkeyBroker.slots["Vertical_2_Thin"] = null;
+
+                            // Add background image
+                            $("body").attr("style", "background-image: url(" + skin.image + ") !important; background-attachment: fixed !important; background-size: cover !important;");
+
+                            // Add link
+                            var target = $("form")[0];
+                            $('body').click(function (e) {
+                                if (e.target == target)
+                                    window.open(skin.link);
+                            });
+
+                            // Add client tracking pixel(s) if there are any
+                            var addImpressionTracker = function (target, url) {
+                                var img = target.insertBefore(
+                                    document.createElement("img"),
+                                    target.firstChild
+                                );
+                                img.className = "skin-pixel";
+                                img.src = url;
+                            };
+                            switch (typeof skin.impressionTracking) {
+                                case "string":
+                                    addImpressionTracker(target, skin.impressionTracking);
+                                    break;
+                                case "object":
+                                    for (var j in skin.impressionTracking)
+                                        if (skin.impressionTracking.hasOwnProperty(j) && typeof skin.impressionTracking[j] == "string")
+                                            addImpressionTracker(target, skin.impressionTracking[j]);
+                                    break;
+                                }
+                            }
+                        });
+
+                    if (windowWidth >= 1300)
+                    {
+                        if (!isAdExperienceLight)
+                        {
+                            MonkeyBroker.addSlot({ slot: "Horizontal_1", sizes: ["970x250", "970x90", "728x90", "Unstacked 300x250"] });
+                            MonkeyBroker.addSlot({ slot: "Horizontal_2", sizes: ["970x250", "970x90", "728x90", "Unstacked 300x250"] });
+                        }
+                        else
+                        {
+                            MonkeyBroker.addSlot({ slot: "Horizontal_1", sizes: ["970x250", "970x90", "728x90", "Unstacked 300x250"] });
+                            MonkeyBroker.addSlot({ slot: "Horizontal_2", sizes: ["970x250", "970x90", "728x90", "Unstacked 300x250"] });
+                        }
+                    }
+                    else if (windowWidth > 728)
+                    {
+                        if (!isAdExperienceLight)
+                        {
+                            MonkeyBroker.addSlot({ slot: "Horizontal_1_Thin", sizes: ["728x90", "Unstacked 300x250"] });
+                            MonkeyBroker.addSlot({ slot: "Horizontal_2_Thin", sizes: ["728x90", "Unstacked 300x250"] });
+                        }
+                        else
+                        {
+                            MonkeyBroker.addSlot({ slot: "Horizontal_1_Thin", sizes: ["728x90", "Unstacked 300x250"] });
+                            MonkeyBroker.addSlot({ slot: "Horizontal_2_Thin", sizes: ["728x90", "Unstacked 300x250"] });
+                        }
+                    }
+                    else
+                    {
+                        MonkeyBroker.addSlot({ slot: "Horizontal_1_Mobile", sizes: ["320x50"] });
+                        MonkeyBroker.addSlot({ slot: "Horizontal_2_Mobile", sizes: ["320x50"] });
+                    }
+
+                    if (!isAdExperienceLight)
+                    {
+                        if (windowWidth >= 1300)
+                            MonkeyBroker.addSlot({ slot: "Vertical_2", sizes: ["300x600", "300x250", "160x600", "120x600", "Stacked 300x250"] });
+                        else if (windowWidth >= 1070)
+                            MonkeyBroker.addSlot({ slot: "Vertical_2_Thin", sizes: ["160x600", "120x600"] });
+                    }
+
+                    MonkeyBroker.go();
+
+                    var VerticalSlotFilled = false;
+                    var VerticalThinSlotFilled = false;
+                    function FillMonkeyBrokerSlots()
+                    {
+                        if (windowWidth >= 1300 && !VerticalSlotFilled)
+                        {
+                            VerticalSlotFilled = true;
+
+                            MonkeyBroker.regSlotsMap["Vertical_2"].el = document.getElementById("mb_adslot_1");
+                            MonkeyBroker.regSlotsMap["Vertical_2"].elCreated = true;
+                            MonkeyBroker.fillSlot("Vertical_2");
+                            ga("send", "event", "AdFillMonkeyBroker", "Vertical_2", { nonInteraction: true });
+                        }
+                        else if (windowWidth >= 1070 && windowWidth < 1300 && !VerticalThinSlotFilled)
+                        {
+                            VerticalThinSlotFilled = true;
+
+                            MonkeyBroker.regSlotsMap["Vertical_2_Thin"].el = document.getElementById("mb_adslot_2");
+                            MonkeyBroker.regSlotsMap["Vertical_2_Thin"].elCreated = true;
+                            MonkeyBroker.fillSlot("Vertical_2_Thin");
+                            ga("send", "event", "AdFillMonkeyBroker", "Vertical_2_Thin", { nonInteraction: true });
+                        }
+                    }
+
+                    function FillMonkeyBrokerHorizontal01()
+                    {
+                        if (typeof MonkeyBroker === "object")
+                        {
+                            if (windowWidth >= 1300) {
+                                MonkeyBroker.fillSlot("Horizontal_1");
+                                ga("send", "event", "AdFillMonkeyBroker", "Horizontal_1", { nonInteraction: true });
+                            }
+                            else if (windowWidth > 728) {
+                                MonkeyBroker.fillSlot("Horizontal_1_Thin");
+                                ga("send", "event", "AdFillMonkeyBroker", "Horizontal_1_Thin", { nonInteraction: true });
+                            }
+                            else
+                            {
+                                MonkeyBroker.fillSlot("Horizontal_1_Mobile");
+                                ga("send", "event", "AdFillMonkeyBroker", "Horizontal_1_Mobile", { nonInteraction: true });
+                            }
+                        }
+                    }
+
+
+                    var advertisementOffsetTop = 80;
+                    var advertisementOffsetTopAnimate = advertisementOffsetTop - 40;
+                    if (advertisementOffsetTopAnimate < 0)
+                        advertisementOffsetTopAnimate = 0;
+                    var isVerticalAdvertisementFixed = false;
+                    function FixVerticalAdvertisement(forceRefresh)
+                    {
+                        if (forceRefresh)
+                            isVerticalAdvertisementFixed = !isVerticalAdvertisementFixed;
+
+                        var scrollTop = $(document).scrollTop();
+                        var advertisementPlaceholder = $("#advertisementPlaceholder");
+                        var advertisementTop = advertisementPlaceholder.offset().top;
+                        var advertisementLeft = advertisementPlaceholder.width() + advertisementPlaceholder.position().left;
+
+                        var verticalAdvertisements = $("#mb_adslot_1, #mb_adslot_2");
+                        if (!isVerticalAdvertisementFixed && advertisementTop - scrollTop < advertisementOffsetTop)
+                        {
+                            isVerticalAdvertisementFixed = true;
+                            verticalAdvertisements.css("position", "fixed");
+                            verticalAdvertisements.css("top", advertisementOffsetTopAnimate + "px");
+                            verticalAdvertisements.css("left", (advertisementLeft + 30) + "px");
+
+                            if (!forceRefresh)
+                            {
+
+                                verticalAdvertisements.css("top", advertisementOffsetTopAnimate + "px");
+                                verticalAdvertisements.animate({ top: advertisementOffsetTop + "px" });
+                            }
+                            else
+
+                                verticalAdvertisements.css("top", advertisementOffsetTop + "px");
+                        }
+                        else if (isVerticalAdvertisementFixed && advertisementTop - scrollTop >= advertisementOffsetTop) {
+                            isVerticalAdvertisementFixed = false;
+                            verticalAdvertisements.css("position", "absolute");
+                            verticalAdvertisements.css("top", advertisementTop + "px");
+                            verticalAdvertisements.css("left", (advertisementLeft + 30) + "px");
+                        }
+                    }
+
+                    var lastHeight = 0;
+                    $(document).ready(function () {
+
+                        if (!isAdExperienceLight)
+                        {
+                            FillMonkeyBrokerSlots();
+
+                            if ($(window).height() >= 600)
+                            {
+                                FixVerticalAdvertisement();
+
+
+                                lastHeight = $("iframe.MonkeyBroker-Size41").css("height");
+                                function CheckForTopSkin()
+                                {
+                                    var newHeight = $("iframe.MonkeyBroker-Size41").css("height");
+
+                                    if (newHeight !== lastHeight)
+                                    {
+                                        lastHeight = newHeight;
+                                        FixVerticalAdvertisement(false);
+                                    }
+
+                                    setTimeout(CheckForTopSkin, 100);
+                                }
+                                CheckForTopSkin();
+
+                                $(window).scroll(function () {
+                                    FixVerticalAdvertisement();
+                                });
+
+                                $(window).resize(function () {
+                                    FixVerticalAdvertisement(true);
+                                });
+                            }
+                        }
+
+                    });
+                }
+
+                var adHistoryPostURL = "/StatusCheck?s=Log Ad History";
+                function LogAdHistory(data)
+                {
+                    if (data === null)
+                    {
+                        var userAdHistoryScript = document.createElement("script");
+                        userAdHistoryScript.setAttribute("src", "http://mb.zam.com/mb/HistoryViewer?callback=LogAdHistory");
+                        document.head.appendChild(userAdHistoryScript);
+                    }
+                    else
+                        $.post(adHistoryPostURL, data);
+                }
+
+            </script>
+
+
+            <style type="text/css">
+
+                /*  */
+                @media (min-width: 1300px) and (max-width: 1579px)
+                {
+                    .noskin #body.container
+                    {
+                        margin-right: 330px;
+                    }
+                }
+
+            </style>
+
+
+
+        <style type="text/css">
+
+            @media (min-width: 1820px)
+            {
+                .advertisementBannerMonkeyBrokerRight, .advertisementBannerMonkeyBrokerRightThin
+                {
+                    left: 1170px;
+                }
+            }
+
+            @media (min-width: 1350px)
+            {
+                #body.container
+                {
+                    padding: 0;
+                }
+            }
+
+            @media (max-width: 1349px)
+            {
+                #body.container
+                {
+                    padding-left: 5px;
+                    padding-right: 5px;
+                }
+            }
+
+            @media (min-width: 1300px) and (max-width: 1819px)
+            {
+                .noskin #body.container
+                {
+                    width: 990px;
+                }
+
+                .noskin .advertisementBannerMonkeyBrokerRight, .noskin .advertisementBannerMonkeyBrokerRightThin
+                {
+                    left: 990px;
+                }
+
+                #body.container
+                {
+                    width: 850px;
+                }
+
+                .advertisementBannerMonkeyBrokerRight, .advertisementBannerMonkeyBrokerRightThin
+                {
+                    left: 850px;
+                }
+            }
+
+            @media (min-width: 1070px) and (max-width: 1299px)
+            {
+                #body.container
+                {
+                    width: 750px;
+                }
+
+                .advertisementBannerMonkeyBrokerRight, .advertisementBannerMonkeyBrokerRightThin
+                {
+                    left: 750px;
+                }
+            }
+
+            @media (min-width: 1070px)
+            {
+                .RadGrid td {
+                    white-space: nowrap;
+                }
+            }
+
+            @media (max-width: 1069px)
+            {
+                .container {
+                    width: auto;
+                }
+            }
+
+            @media (max-width: 1069px)
+            {
+                .advertisementBannerMonkeyBrokerRight, .advertisementBannerMonkeyBrokerRightThin
+                {
+                    display: none;
+                }
+            }
+
+            .advertisementBannerMonkeyBrokerRight, .advertisementBannerMonkeyBrokerRightThin
+            {
+                position: relative;
+                height: 0;
+            }
+
+            @media print
+            {
+                .no-print, .no-print *
+                {
+                    display: none !important;
+                }
+            }
+
+            .RadGrid
+            {
+                max-width: 100%;
+                overflow-y: hidden;
+            }
+
+            .RadGrid, .RadHtmlChart, .btn-border
+            {
+               border-radius: 10px !important;
+            }
+
+            .btn-border
+            {
+                overflow: hidden;
+            }
+
+            .RadGrid img
+            {
+                border-radius: 3px;
+            }
+
+            .ImageGradientBorder img
+            {
+                border-width: 1px;
+                border-style: solid;
+                border-image: linear-gradient(135deg, #3b679e 0%,#2b88d9 50%,#207cca 51%,#7db9e8 100%);
+                border-image-slice: 1;
+            }
+
+            .advertisementBanner
+            {
+                min-height: 110px;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                overflow: hidden;
+            }
+
+            @media (min-width: 1070px)
+            {
+                .advertisementBannerMonkeyBrokerTop
+                {
+                    min-height: 270px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            .section-title
+            {
+                margin-top: 0;
+            }
+
+            span.titlePopup
+            {
+                position: absolute;
+                padding: 4px;
+                background: rgba(30, 31, 54, .95);
+                border: 1px solid #5f6574;
+				box-shadow: 0 0 10px #1e1f36, 0 0 5px #1e1f36, inset 0 0 0 1px #8bb1ff;
+				margin: 0 0 0 69px;
+                min-width: 100px;
+				max-width: 400px;
+				outline: 1px solid #1e1f36;
+				padding: 5px 8px;
+                font-size: 16px;
+				pointer-events: none;
+                line-height: 20px;
+                color: #bfd4fd;
+                font-family: 'Open Sans', sans-serif;
+                z-index: 99;
+                text-shadow: none;
+				text-align: left;
+				white-space: normal;
+            }
+
+			td > span.titlePopup {
+				margin: 0 0 0 5px;
+			}
+
+			span.titlePopup b {
+				color: #fff;
+				display: block;
+				font-weight: bold;
+				margin: 0 0 2px 0;
+			}
+
+            .titlePopupHover:hover .titlePopupHidden
+            {
+                visibility: visible;
+                margin-left: 50px;
+            }
+
+            .titlePopupHidden
+            {
+                visibility: hidden;
+            }
+
+            .titlePopupHover .titlePopupHidden td
+            {
+                border: 0;
+            }
+
+            /* Not able to select certain tabs if hovering expands them to a different row */
+            .nav-tabs li a, .nav-tabs li a:hover
+            {
+                transition: none !important;
+            }
+
+            #footer
+            {
+                padding: 5px 0;
+            }
+
+            #footer-widgets
+            {
+                padding-bottom: 0;
+            }
+
+            #footer-widgets .col-md-4
+            {
+                margin-top: 5px;
+            }
+
+            /* RadGrid style changes */
+            .RadGrid .rgRow > td, .RadGrid .rgAltRow > td, .RadGrid .rgEditRow > td, .RadGrid .rgFooter>td, .RadGrid .rgFilterRow > td, .RadGrid .rgHeader, .RadGrid .rgResizeCol, .RadGrid .rgGroupHeader td {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+
+            /* Datatables Styles */
+            table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
+                cursor: pointer;
+            }
+
+            table.dataTable thead .sorting_asc:after {
+                content: "\f0de";
+                font-family: FontAwesome;
+                float: right;
+            }
+
+            table.dataTable thead .sorting_desc:after {
+                content: "\f0dd";
+                font-family: FontAwesome;
+                float: right;
+            }
+
+            .mbReportBadAd {
+                font-size: 10px;
+                cursor: pointer;
+                margin: -13px 0 0 auto;
+                max-width: 125px;
+                opacity: 0.5;
+                white-space: nowrap;
+            }
+
+            .mbReportBadAd:hover {
+                opacity: 1;
+            }
+
+            .advertisementBannerMonkeyBrokerTop .mbReportBadAd:first-child, .advertisementBannerMonkeyBrokerBottom .mbReportBadAd:first-child {
+                margin-right: 250px;
+            }
+
+            .ajaxContainer {
+                width: 100%;
+                padding: 5px 5px 5px 30px;
+                border: 1px solid gray;
+            }
+
+            .ajaxLoader {
+	            width: 30px;
+	            height: 30px;
+	            margin-left: 15px;
+	            border: 8px solid black;
+	            border-right-color: transparent;
+	            border-radius: 50%;
+	            box-shadow: 0 0 25px 2px #eee;
+	            -webkit-animation: ajaxLoaderSpin 1s linear infinite;
+	            -moz-animation: ajaxLoaderSpin 1s linear infinite;
+	            -ms-animation: ajaxLoaderSpin 1s linear infinite;
+	            -o-animation: ajaxLoaderSpin 1s linear infinite;
+	            animation: ajaxLoaderSpin 1s linear infinite;
+            }
+
+            @-webkit-keyframes ajaxLoaderSpin
+            {
+	            from { -webkit-transform: rotate(0deg); opacity: 0.4; }
+	            50%  { -webkit-transform: rotate(180deg); opacity: 1; }
+	            to   { -webkit-transform: rotate(360deg); opacity: 0.4; }
+            }
+
+            @-moz-keyframes ajaxLoaderSpin
+            {
+	            from { -moz-transform: rotate(0deg); opacity: 0.4; }
+	            50%  { -moz-transform: rotate(180deg); opacity: 1; }
+	            to   { -moz-transform: rotate(360deg); opacity: 0.4; }
+            }
+
+            @-ms-keyframes ajaxLoaderSpin
+            {
+	            from { -ms-transform: rotate(0deg); opacity: 0.4; }
+	            50%  { -ms-transform: rotate(180deg); opacity: 1; }
+	            to   { -ms-transform: rotate(360deg); opacity: 0.4; }
+            }
+
+            @-o-keyframes ajaxLoaderSpin
+            {
+	            from { -o-transform: rotate(0deg); opacity: 0.4; }
+	            50%  { -o-transform: rotate(180deg); opacity: 1; }
+	            to   { -o-transform: rotate(360deg); opacity: 0.4; }
+            }
+
+            @keyframes ajaxLoaderSpin
+            {
+	            from { transform: rotate(0deg); opacity: 0.2; }
+	            50%  { transform: rotate(180deg); opacity: 1; }
+	            to   { transform: rotate(360deg); opacity: 0.2; }
+            }
+
+            td.details-control {
+	            background: url('/Images/DetailsOpen.png') no-repeat center center;
+	            cursor: pointer;
+                min-width: 30px;
+            }
+            tr.shown td.details-control {
+	            background: url('/Images/DetailsClose.png') no-repeat center center;
+            }
+
+            /* Pagination CSS */
+            .dataTables_length {
+                display: none;
+            }
+
+            .dataTables_wrapper .dataTables_paginate {
+              padding-top: 0.25em;
+              padding-bottom: 0.25em;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+              box-sizing: border-box;
+              display: inline-block;
+              min-width: 1.5em;
+              padding: 0.5em 1em;
+              margin-left: 2px;
+              text-align: center;
+              text-decoration: none !important;
+              cursor: pointer;
+              *cursor: hand;
+              border: 1px solid transparent;
+              border-radius: 2px;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+              cursor: default;
+              border: 1px solid transparent;
+              background: transparent;
+              box-shadow: none;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover, .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+              color: white !important;
+              border: 1px solid #111;
+              background-color: #585858;
+              background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));
+              /* Chrome,Safari4+ */
+              background: -webkit-linear-gradient(top, #585858 0%, #111 100%);
+              /* Chrome10+,Safari5.1+ */
+              background: -moz-linear-gradient(top, #585858 0%, #111 100%);
+              /* FF3.6+ */
+              background: -ms-linear-gradient(top, #585858 0%, #111 100%);
+              /* IE10+ */
+              background: -o-linear-gradient(top, #585858 0%, #111 100%);
+              /* Opera 11.10+ */
+              background: linear-gradient(to bottom, #585858 0%, #111 100%);
+              /* W3C */
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+              outline: none;
+              background-color: #2b2b2b;
+              background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));
+              /* Chrome,Safari4+ */
+              background: -webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+              /* Chrome10+,Safari5.1+ */
+              background: -moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+              /* FF3.6+ */
+              background: -ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+              /* IE10+ */
+              background: -o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);
+              /* Opera 11.10+ */
+              background: linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);
+              /* W3C */
+              box-shadow: inset 0 0 3px #111;
+            }
+            .dataTables_wrapper .dataTables_paginate .ellipsis {
+              padding: 0 1em;
+            }
+            .dataTables_wrapper .dataTables_processing {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: 100%;
+              height: 40px;
+              margin-left: -50%;
+              margin-top: -25px;
+              padding-top: 20px;
+              text-align: center;
+              font-size: 1.2em;
+              background-color: white;
+              background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(25%, rgba(255, 255, 255, 0.9)), color-stop(75%, rgba(255, 255, 255, 0.9)), color-stop(100%, rgba(255, 255, 255, 0)));
+              background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+              background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+              background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+              background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+              background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%);
+            }
+
+            .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate {
+                float: none;
+                text-align: center;
+            }
+            .dataTables_wrapper .dataTables_paginate {
+                margin-top: 0.5em;
+            }
+
+            div.dt-buttons {
+                display: inline;
+            }
+
+            div.dt-buttons > .btn {
+                padding: 2px;
+            }
+
+            /* Styles for Datatables Fixed Header extension */
+            table.dataTable td, table.dataTable th {
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+            }
+
+            .rgHeader {
+                color: #fff;
+            }
+
+            .rgHeader, th.rgResizeCol {
+                padding-top: 8px;
+                padding-bottom: 7px;
+                border-bottom: 1px solid transparent;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            .rgRow > td, .rgAltRow > td, .rgEditRow > td, .rgFooter>td, .rgFilterRow > td, .rgHeader, .rgResizeCol, .rgGroupHeader td {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+
+            .rgHeader:first-child, th.rgResizeCol:first-child, .rgFilterRow>td:first-child, .rgRow>td:first-child, .rgAltRow>td:first-child {
+                border-left-width: 0;
+            }
+
+            .rgMasterTable, .rgDetailTable, .rgEditForm table {
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+
+            .rgMasterTable {
+                line-height: 20px;
+            }
+            /* End Styles for Datatables Fixed Header extension */
+
+            iframe.MonkeyBroker-Size41 {
+                height: 580px !important;
+            }
+
+            .btn-primary:hover, .btn-primary:visited {
+                color: white;
+            }
+
+            .nav-pills {
+                background-color: rgb(73, 73, 73);
+                border-radius: 5px;
+            }
+
+            .nav-pills li.navPillPlain a:hover, .nav-pills li.navPillPlain a:visited {
+                background-color: #2d2d2d !important;
+            }
+
+            .nav-pills li a {
+                color: white;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+            .skin-pixel {
+                position: fixed;
+            }
+
+        </style>
+        <noscript><style>#body>.main-content{display:none;}</style></noscript>
+
+
+
+    <style type="text/css">
+
+        #RadGridCharacterStatistics .dataTables_filter label
+        {
+            width: 100%;
+        }
+
+        .HeroSubRoleInfoLink
+        {
+            padding: 1px;
+            margin: 3px;
+            color: black;
+            float: right;
+        }
+
+        .divImportantNote a
+        {
+            color: #1A1537;
+            text-decoration: underline;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#RadGridCharacterStatistics table").DataTable({ order: [[5, "desc"]] });
+
+            $(".HeroSubRoleInfoLink").insertAfter($("#RadGridCharacterStatistics input[type='search']"));
+
+            $(".HeroSubRoleInfoLink").click(function () {
+                $("#RadGridCharacterStatistics input[type='search']").val($(this).text()).trigger("keyup");
+            });
+        });
+
+    </script>
+
+<link href="https://www.hotslogs.com/Default" rel="canonical" /><link href="/WebResource.axd?d=W1T0Fb4QEpZqpZFLuEBEmwTTmm7p2xWpMdQpGykEIV-VYUnFNrWRZbs6UJHslZUqXvXVk889RMzbOqWR0JMcaJl7pAsw2J_yUXwzG4VghbSYB_0gAmOhFLVSC2JhArRM6UQBVMA9jaq8i7b60kYQezyQseU1&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=NqllLRaOE1zDMT6S7EOH_VQjpbOV_B2E1S1s7ybONiQu5d5mxh3csiKxwCjjqjHFUO7lMAFKcTY6G-dVH38nFvnzGCYICRWjnu_sx3RamyljrvK8QA2IqK6PJ2Bs8-iaRZSw3lFtIbJQ9jsb5YtFyyvWAk81&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=J7rNVAs_y9UdzGPL9IbOJApJ63-aUXqgKvlKJzRTRrr9lFQa3eyaZQKtDCD-PawLPkZOdQSgj6z1YNx18LuUxVwIx-C55b7NCBJgQd84zaXP2iHZW13x7XkuaXmLk4ackrgMd2BR89H2m-0xNgxBIIFjhzI1&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=XMvugF2skguXxGMFpflQoHQv26kEA4TOAKcw2qIpvSjgDEYBkvEV9QpDoLwyDRt9l7ndWZZf2DLRJ4KjYNAMtMxOL-DxwRTdA1Xz5VwiXJZMPoJ5OtpwVxpdLQyVrjdUKBQ3J5Uv5vGyVl-YW1NvtWfb-nY1&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=HNsvt4diaxCKdzGkjGEdJogmVLdnV67P7kojK7O67D_KGBwQYcDXei75BmS7EAXQ5DOPiQJl3ojraM020GgTQvsiJczDOsfmKtZ6Riq8829hGkpMM6qber7jGWayMO6dBgB23LZ0k7Ezc2uq7C0xpLeQa02CvUJd4JbI64xjbjR663qK0&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=uWtVX7kc9GP_yFsmSw7Ex8-GIedWNRjkg8NLvMq2iDu3fhyfw7ajOQ-B9My1l6H5F55ly0QAlht0KpEEPPdk4ng40F-YNH3DSEagfWZCTsykk968mXgIxHBdLZkpufbsdfl4R9EZJxf0Tdf-BCA8LKfBPfQ1&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /><link href="/WebResource.axd?d=neZYSLRYXd3zCv5Ed502CtDFumeS5UPyRzucLX3gPOJfm7pc9a8Hpaxby5-LfXc80tV2hBu8gGOZKR5v6VNLsL1fkjP3VoyBn-bi0m_n886kwZaUZNlZ59xnjS6fKQTNzQNHMMJApYsN1s_wMzAVb8qhIf4YOe8PZpEN8yKCEbU8SXFL0&amp;t=636237918080000000" type="text/css" rel="stylesheet" class="Telerik_stylesheet" /></head>
+
+    <body class="noskin">
+        <form method="post" action="./Default" id="ctl01">
+<div class="aspNetHidden">
+<input type="hidden" name="ctl14_TSM" id="ctl14_TSM" value="" />
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE4OTUwNDQ5NjYPZBYCZg9kFgYCAQ9kFgQCDA8WAh4HVmlzaWJsZWhkAhEPFgIfAGdkAgMPZBYOAgEPFgIeBFNraW4FBUJsYWNrFgJmDxQrAAIPFgQeE2NhY2hlZFNlbGVjdGVkVmFsdWVkHwBoZBAWFWYCAQICAgMCBAIFAgYCBwIIAgkCCgILAgwCDQIOAg8CEAIRAhICEwIUFhUUKwACDxYGHgRUZXh0BQVCbGFjax4FVmFsdWUFBUJsYWNrHghTZWxlY3RlZGdkZBQrAAIPFgYfAwUPQmxhY2tNZXRyb1RvdWNoHwQFD0JsYWNrTWV0cm9Ub3VjaB8FaGRkFCsAAg8WBh8DBQlCb290c3RyYXAfBAUJQm9vdHN0cmFwHwVoZGQUKwACDxYGHwMFB0RlZmF1bHQfBAUHRGVmYXVsdB8FaGRkFCsAAg8WBh8DBQRHbG93HwQFBEdsb3cfBWhkZBQrAAIPFgYfAwUITWF0ZXJpYWwfBAUITWF0ZXJpYWwfBWhkZBQrAAIPFgYfAwUFTWV0cm8fBAUFTWV0cm8fBWhkZBQrAAIPFgYfAwUKTWV0cm9Ub3VjaB8EBQpNZXRyb1RvdWNoHwVoZGQUKwACDxYGHwMFCk9mZmljZTIwMDcfBAUKT2ZmaWNlMjAwNx8FaGRkFCsAAg8WBh8DBQ9PZmZpY2UyMDEwQmxhY2sfBAUPT2ZmaWNlMjAxMEJsYWNrHwVoZGQUKwACDxYGHwMFDk9mZmljZTIwMTBCbHVlHwQFDk9mZmljZTIwMTBCbHVlHwVoZGQUKwACDxYGHwMFEE9mZmljZTIwMTBTaWx2ZXIfBAUQT2ZmaWNlMjAxMFNpbHZlch8FaGRkFCsAAg8WBh8DBQdPdXRsb29rHwQFB091dGxvb2sfBWhkZBQrAAIPFgYfAwUEU2lsax8EBQRTaWxrHwVoZGQUKwACDxYGHwMFBlNpbXBsZR8EBQZTaW1wbGUfBWhkZBQrAAIPFgYfAwUGU3Vuc2V0HwQFBlN1bnNldB8FaGRkFCsAAg8WBh8DBQdUZWxlcmlrHwQFB1RlbGVyaWsfBWhkZBQrAAIPFgYfAwUFVmlzdGEfBAUFVmlzdGEfBWhkZBQrAAIPFgYfAwUFV2ViMjAfBAUFV2ViMjAfBWhkZBQrAAIPFgYfAwUHV2ViQmx1ZR8EBQdXZWJCbHVlHwVoZGQUKwACDxYGHwMFCFdpbmRvd3M3HwQFCFdpbmRvd3M3HwVoZGQPFhVmZmZmZmZmZmZmZmZmZmZmZmZmZmYWAQV3VGVsZXJpay5XZWIuVUkuUmFkQ29tYm9Cb3hJdGVtLCBUZWxlcmlrLldlYi5VSSwgVmVyc2lvbj0yMDE3LjEuMjI4LjQ1LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPTEyMWZhZTc4MTY1YmEzZDQWLmYPDxYEHghDc3NDbGFzcwUJcmNiSGVhZGVyHgRfIVNCAgJkZAIBDw8WBB8GBQlyY2JGb290ZXIfBwICZGQCAg8PFgYfAwUFQmxhY2sfBAUFQmxhY2sfBWdkZAIDDw8WBh8DBQ9CbGFja01ldHJvVG91Y2gfBAUPQmxhY2tNZXRyb1RvdWNoHwVoZGQCBA8PFgYfAwUJQm9vdHN0cmFwHwQFCUJvb3RzdHJhcB8FaGRkAgUPDxYGHwMFB0RlZmF1bHQfBAUHRGVmYXVsdB8FaGRkAgYPDxYGHwMFBEdsb3cfBAUER2xvdx8FaGRkAgcPDxYGHwMFCE1hdGVyaWFsHwQFCE1hdGVyaWFsHwVoZGQCCA8PFgYfAwUFTWV0cm8fBAUFTWV0cm8fBWhkZAIJDw8WBh8DBQpNZXRyb1RvdWNoHwQFCk1ldHJvVG91Y2gfBWhkZAIKDw8WBh8DBQpPZmZpY2UyMDA3HwQFCk9mZmljZTIwMDcfBWhkZAILDw8WBh8DBQ9PZmZpY2UyMDEwQmxhY2sfBAUPT2ZmaWNlMjAxMEJsYWNrHwVoZGQCDA8PFgYfAwUOT2ZmaWNlMjAxMEJsdWUfBAUOT2ZmaWNlMjAxMEJsdWUfBWhkZAINDw8WBh8DBRBPZmZpY2UyMDEwU2lsdmVyHwQFEE9mZmljZTIwMTBTaWx2ZXIfBWhkZAIODw8WBh8DBQdPdXRsb29rHwQFB091dGxvb2sfBWhkZAIPDw8WBh8DBQRTaWxrHwQFBFNpbGsfBWhkZAIQDw8WBh8DBQZTaW1wbGUfBAUGU2ltcGxlHwVoZGQCEQ8PFgYfAwUGU3Vuc2V0HwQFBlN1bnNldB8FaGRkAhIPDxYGHwMFB1RlbGVyaWsfBAUHVGVsZXJpax8FaGRkAhMPDxYGHwMFBVZpc3RhHwQFBVZpc3RhHwVoZGQCFA8PFgYfAwUFV2ViMjAfBAUFV2ViMjAfBWhkZAIVDw8WBh8DBQdXZWJCbHVlHwQFB1dlYkJsdWUfBWhkZAIWDw8WBh8DBQhXaW5kb3dzNx8EBQhXaW5kb3dzNx8FaGRkAgIPFgIeBWNsYXNzBTxuYXZiYXIgbmF2YmFyLXN0YXRpYy10b3AgbmF2YmFyLWRlZmF1bHQgbm8tcHJpbnQgbmF2YmFyLWRhcmsWAgIzDxYCHwBoZAIDDxYCHwBoZAIFDxYCHwBoZAIID2QWCAIBDxYCHwBnFgICAQ8WAh8DBagBVGhlcmUgaXMgY3VycmVudGx5IGEgYnVnIHdpdGggSGVybyBMZXZlbHMgaW4gSG90UyAyLjAgcmVwbGF5cy4gJm5ic3A7QmVjYXVzZSBvZiB0aGlzLCBJJ3ZlIHRlbXBvcmFyaWx5IHJlbW92ZWQgdGhlICdIZXJvIExldmVsIDUrJyByZXF1aXJlbWVudCBmcm9tIFNpdGV3aWRlIFN0YXRpc3RpY3MuZAIHDxYCHglpbm5lcmh0bWwFelRoYW5rIHlvdSB0byBldmVyeW9uZSBmb3IgeW91ciBwYXJ0aWNpcGF0aW9uISAgU28gZmFyLCBldmVyeW9uZSBoYXMgdXBsb2FkZWQgYSB0b3RhbCBvZiA8c3Ryb25nPjk4LDA4MiwyMzY8L3N0cm9uZz4gZ2FtZXMhZAILDxYCHwkFG0xhc3QgVXBkYXRlZCA2NSBNaW51dGVzIEFnb2QCDw8WAh8DBYYGPGRpdiBjbGFzcz0iSGVyb1N1YlJvbGVJbmZvTGluayBidG4iIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiAjREREREREOyI+VXRpbGl0eTwvZGl2PjxkaXYgY2xhc3M9Ikhlcm9TdWJSb2xlSW5mb0xpbmsgYnRuIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjogI0E2NjBFODsiPlNpZWdlPC9kaXY+PGRpdiBjbGFzcz0iSGVyb1N1YlJvbGVJbmZvTGluayBidG4iIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiAjRTMzQjhFOyI+U3VzdGFpbmVkIERhbWFnZTwvZGl2PjxkaXYgY2xhc3M9Ikhlcm9TdWJSb2xlSW5mb0xpbmsgYnRuIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjogI0UzM0IzQjsiPkJ1cnN0IERhbWFnZTwvZGl2PjxkaXYgY2xhc3M9Ikhlcm9TdWJSb2xlSW5mb0xpbmsgYnRuIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjogI0UzRTMzQjsiPkFtYnVzaGVyPC9kaXY+PGRpdiBjbGFzcz0iSGVyb1N1YlJvbGVJbmZvTGluayBidG4iIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiAjNjBDRENEOyI+U3VwcG9ydDwvZGl2PjxkaXYgY2xhc3M9Ikhlcm9TdWJSb2xlSW5mb0xpbmsgYnRuIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjogIzNCRTMzQjsiPkhlYWxlcjwvZGl2PjxkaXYgY2xhc3M9Ikhlcm9TdWJSb2xlSW5mb0xpbmsgYnRuIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjogI0UzQTIzQjsiPkJydWlzZXI8L2Rpdj48ZGl2IGNsYXNzPSJIZXJvU3ViUm9sZUluZm9MaW5rIGJ0biIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNDQ0NDOTk7Ij5UYW5rPC9kaXY+ZAINDxQrAAIPFg4eFF9DYWNoZWRTZWxlY3RlZFZhbHVlBQJlbh4cRW5hYmxlRW1iZWRkZWRCYXNlU3R5bGVzaGVldGceDl9TZWxlY3RlZFZhbHVlBQJlbh4NX1NlbGVjdGVkVGV4dGUeF0VuYWJsZUFqYXhTa2luUmVuZGVyaW5naB4SUmVzb2x2ZWRSZW5kZXJNb2RlCylyVGVsZXJpay5XZWIuVUkuUmVuZGVyTW9kZSwgVGVsZXJpay5XZWIuVUksIFZlcnNpb249MjAxNy4xLjIyOC40NSwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj0xMjFmYWU3ODE2NWJhM2Q0Ah4VRW5hYmxlRW1iZWRkZWRTY3JpcHRzZ2QQFg5mAgECAgIDAgQCBQIGAgcCCAIJAgoCCwIMAg0WDhQrAAIPFgIfBWdkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZBQrAAIPFgIfBWhkZA8WDmZmZmZmZmZmZmZmZmZmFgEFeFRlbGVyaWsuV2ViLlVJLkRyb3BEb3duTGlzdEl0ZW0sIFRlbGVyaWsuV2ViLlVJLCBWZXJzaW9uPTIwMTcuMS4yMjguNDUsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49MTIxZmFlNzgxNjViYTNkNBYcZg8PFgIfBWdkZAIBDw8WAh8FaGRkAgIPDxYCHwVoZGQCAw8PFgIfBWhkZAIEDw8WAh8FaGRkAgUPDxYCHwVoZGQCBg8PFgIfBWhkZAIHDw8WAh8FaGRkAggPDxYCHwVoZGQCCQ8PFgIfBWhkZAIKDw8WAh8FaGRkAgsPDxYCHwVoZGQCDA8PFgIfBWhkZAINDw8WAh8FaGRkAg4PFCsAAg8WCB8QZx8LZx8PCysEAh8OaGQQFgJmAgEWAhQrAAJkZBQrAAJkZA8WAmZmFgEFeFRlbGVyaWsuV2ViLlVJLkRyb3BEb3duTGlzdEl0ZW0sIFRlbGVyaWsuV2ViLlVJLCBWZXJzaW9uPTIwMTcuMS4yMjguNDUsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49MTIxZmFlNzgxNjViYTNkNGQCBQ8WAh8AZ2QYBAUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgMFLGN0bDAwJE1haW5Db250ZW50JFJhZEdyaWRDaGFyYWN0ZXJTdGF0aXN0aWNzBRZjdGwwMCREcm9wRG93bkxhbmd1YWdlBRZjdGwwMCREcm9wRG93blNpdGVTa2luBTJjdGwwMCRNYWluQ29udGVudCRSYWRHcmlkQ2hhcmFjdGVyU3RhdGlzdGljcyRjdGwwMA8UKwADFCsAAmQXAwULXyFJdGVtQ291bnQCQwUIXyFQQ291bnRkBQZfIURTSUMCQxYCHgNfc2UWAh4CX2NmZGQFLGN0bDAwJE1haW5Db250ZW50JFJhZEdyaWRDaGFyYWN0ZXJTdGF0aXN0aWNzDxQrAAJkFwIFD1NlbGVjdGVkSW5kZXhlcxYABQtFZGl0SW5kZXhlcxYAZAURY3RsMDAkU2tpbkNob29zZXIPFCsAAmUFBUJsYWNrZPxOoIpLZzDULPOnNP4KRMEHXEru" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['ctl01'];
+if (!theForm) {
+    theForm = document.ctl01;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/WebResource.axd?d=J7DAMIAWPzch3psUWpbKu1PLhw3mtpY3JxWNhTZCHY954j8yu8HSxwgRwBw0drQyrty6EP87J6XhY2giljpGd6fQvUQ1&amp;t=636266358085485781" type="text/javascript"></script>
+
+
+<script src="/Telerik.Web.UI.WebResource.axd?_TSM_HiddenField_=ctl14_TSM&amp;compress=1&amp;_TSM_CombinedScripts_=%3b%3bSystem.Web.Extensions%2c+Version%3d4.0.0.0%2c+Culture%3dneutral%2c+PublicKeyToken%3d31bf3856ad364e35%3aen-US%3a0f2ae90c-87fb-4f74-9210-4b167170d85e%3aea597d4b%3ab25378d2%3bTelerik.Web.UI%2c+Version%3d2017.1.228.45%2c+Culture%3dneutral%2c+PublicKeyToken%3d121fae78165ba3d4%3aen-US%3ab7c0ed1c-66b0-411f-9d0a-18294380a077%3a16e4e7cd%3a33715776%3a58366029%3af7645509%3a24ee1bba%3ac128760b%3a88144a7a%3a1e771326%3af46195d3%3a6b3f73b3" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CA0B0334" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAJeNhzg/tEbpbtt78c1WjqABO+j6L3z5QLio4t5EwZuRJGu+cSryWcAznruA9mqCWYXr3GX" />
+</div>
+
+            <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$ctl14', 'ctl01', [], [], [], 90, 'ctl00');
+//]]>
+</script>
+
+
+
+            <nav id="header" role="navigation" class="navbar navbar-static-top navbar-default no-print navbar-dark">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" style="position: relative;">
+                            <span class="sr-only">Toggle navigation</span>
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <a href="/Default"><img src="//d1i1jxrdh2kvwy.cloudfront.net/Images/logo.png" alt="HOTS Logs"></a>
+                    </div> <!-- navbar-header -->
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="http://masterleague.net/" target="_blank">eSports</a></li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Social</a>
+                                <ul class="dropdown-menu dropdown-menu-left">
+                                    <li><a href="/Social/GuessTheVictor">Guess the Victor</a></li>
+                                    <li><a href="/Replays/ReplaySearch">Search and Download Replays</a></li>
+                                    <li><a href="/Player/MatchHistory">Share Replay</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Leaderboard</a>
+                                <ul class="dropdown-menu dropdown-menu-left">
+                                    <li><a href="/Rankings?GameMode=5">Team League</a></li>
+                                    <li><a href="/Rankings?GameMode=4">Hero League</a></li>
+                                    <li><a href="/Rankings?GameMode=6">Unranked Draft</a></li>
+                                    <li><a href="/Rankings?GameMode=3">Quick Match</a></li>
+                                    <li><a href="/HeroRankings">Hero Leaderboards</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Statistics</a>
+                                <ul class="dropdown-menu dropdown-menu-left">
+                                    <li><a href="/Sitewide/HeroDetails">Hero Details</a></li>
+                                    <li><a href="/Sitewide/HeroAndMapStatistics">Hero and Map Statistics</a></li>
+                                    <li><a href="/Sitewide/TeamDraft">Draft Helper</a></li>
+                                    <li><a href="/Sitewide/MapObjectives">Map Objectives</a></li>
+                                    <li><a href="/Sitewide/ScoreResultStatistics">Score Results</a></li>
+                                    <li><a href="/Sitewide/TeamCompositions">Team Compositions</a></li>
+                                    <li><a href="/Sitewide/MatchAwards">Match Awards</a></li>
+                                    <li><a href="/Sitewide/HeatMap">Heat Maps</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">My Account</a>
+                                <ul class="dropdown-menu dropdown-menu-left">
+                                    <li><a href="/Player/Profile">Profile</a></li>
+                                    <li><a href="/Player/HeroOverview">Hero Overview</a></li>
+                                    <li><a href="/Team/Overview">Team Overview</a></li>
+                                    <li><a href="/Player/MatchAwards">Match Awards</a></li>
+                                    <li><a href="/Player/MatchHistory">Match History</a></li>
+                                    <li><a href="/Account/Upload">Upload Replays</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown-toggle playerSearchDropdown" data-toggle="dropdown"><i class="fa fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right" style="padding: 10px;">
+                                    <table><tr>
+                                        <td style="padding-right: 10px;"><input name="ctl00$ctl40" type="text" class="TextBoxPlayerSearch" placeholder="Find a Player" /></td>
+                                        <td><div ID="ButtonPlayerSearch" class="btn btn-border btn-ar btn-primary">Search</div></td>
+                                    </tr></table>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div><!-- navbar-collapse -->
+                </div><!-- container -->
+            </nav>
+
+            <div id="body" class="container" style="min-height: 800px;">
+                <section class="content-wrapper main-content clear-fix">
+                    <div id="advertisementPlaceholder"></div>
+
+
+                    <div id="advertisementBannerMonkeyBrokerRight" style="width: 300px;"><div id="mb_adslot_1" class="advertisementBannerMonkeyBrokerRight"></div></div>
+                    <div id="advertisementBannerMonkeyBrokerRightThin" style="width: 160px;"><div id="mb_adslot_2" class="advertisementBannerMonkeyBrokerRightThin"></div></div>
+
+
+    <div id="MainContent_divImportantNote" class="divImportantNote alert alert-info" style="margin-top: 20px;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4>Information</h4>
+        There is currently a bug with Hero Levels in HotS 2.0 replays. &nbsp;Because of this, I've temporarily removed the 'Hero Level 5+' requirement from Sitewide Statistics.
+    </div>
+
+    <h2>Welcome to HOTS Logs!</h2>
+
+    <p>The best site dedicated to analyzing Heroes of the Storm replay files. <span id="MainContent_pTotalGamesPlayedMessage">Thank you to everyone for your participation!  So far, everyone has uploaded a total of <strong>98,082,236</strong> games!</span></p>
+    <p>Want to learn more?  MFPallytime made a <a href="https://www.youtube.com/watch?v=q8AB_WeeSE4">great YouTube video</a> explaining how to use HOTS Logs</p>
+
+    <h2>Sitewide Hero Statistics over the Last 7 Days</h2>
+    <p><strong>Note: </strong>Includes Hero League matches with <strong>Hero level 5+.</strong> <span id="MainContent_pLastUpdated">Last Updated 65 Minutes Ago</span>. <a href="/Sitewide/HeroAndMapStatistics">Additional Filters Available Here</a>.</p>
+
+    <div id="MainContent_advertisementBannerMonkeyBrokerTopReplacement" class="advertisementBanner advertisementBannerMonkeyBrokerTop" style="margin: 15px 0;"><script type="text/javascript"> FillMonkeyBrokerHorizontal01(); </script></div>
+
+    <div class="HeroSubRoleInfoLink btn" style="background-color: #DDDDDD;">Utility</div><div class="HeroSubRoleInfoLink btn" style="background-color: #A660E8;">Siege</div><div class="HeroSubRoleInfoLink btn" style="background-color: #E33B8E;">Sustained Damage</div><div class="HeroSubRoleInfoLink btn" style="background-color: #E33B3B;">Burst Damage</div><div class="HeroSubRoleInfoLink btn" style="background-color: #E3E33B;">Ambusher</div><div class="HeroSubRoleInfoLink btn" style="background-color: #60CDCD;">Support</div><div class="HeroSubRoleInfoLink btn" style="background-color: #3BE33B;">Healer</div><div class="HeroSubRoleInfoLink btn" style="background-color: #E3A23B;">Bruiser</div><div class="HeroSubRoleInfoLink btn" style="background-color: #CCCC99;">Tank</div>
+    <div id="RadGridCharacterStatistics" class="RadGrid RadGrid_Black" style="width:100%;">
+
+<!-- 2017.1.228.45 --><table class="rgMasterTable" id="" style="width:100%;table-layout:auto;empty-cells:show;">
+	<colgroup>
+		<col  />
+		<col  />
+		<col  />
+		<col  />
+		<col  />
+		<col  />
+		<col  />
+		<col style="display:none;" />
+		<col style="display:none;" />
+		<col style="display:none;" />
+	</colgroup>
+<thead>
+		<tr>
+			<th scope="col" class="rgHeader">&nbsp;</th><th scope="col" class="rgHeader">Hero</th><th scope="col" class="rgHeader">Games Played</th><th scope="col" class="rgHeader">Games Banned</th><th scope="col" title="Games Played + Games Banned" class="rgHeader">Popularity</th><th scope="col" class="rgHeader">Win Percent</th><th scope="col" class="rgHeader">% Δ</th><th scope="col" class="rgHeader" style="display:none;">&nbsp;</th><th scope="col" class="rgHeader" style="display:none;">&nbsp;</th><th scope="col" class="rgHeader" style="display:none;">&nbsp;</th>
+		</tr>
+	</thead><tbody>
+	<tr class="rgRow" id="__0">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Probius.png" style="height:40px;width:40px;" /></td><td><a title="Probius" href="/Sitewide/HeroDetails?Hero=Probius">Probius</a></td><td>3,411</td><td>849</td><td>5.2 %<div style='height: 4px; width: 5.2169941216967642853360165200%; background-color: #60CDCD;'></div></td><td>55.9 %<div style='height: 4px; width: 100%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.1 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">Sondius,Пробиус,普罗比斯,普羅比斯,Probiusz,프로비우스,EDN-OS</td>
+	</tr><tr class="rgAltRow" id="__1">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Anubarak.png" style="height:40px;width:40px;" /></td><td><a title="Anub&#39;arak" href="/Sitewide/HeroDetails?Hero=Anub&#39;arak">Anub'arak</a></td><td>27,294</td><td>21,335</td><td>59.6 %<div style='height: 4px; width: 59.553335010326748927606842130%; background-color: #60CDCD;'></div></td><td>55.2 %<div style='height: 4px; width: 96.54029628148821443206629550%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.2 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">Anub’arak,Ануб'арак,아눕아락,阿努巴拉克</td>
+	</tr><tr class="rgRow" id="__2">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Samuro.png" style="height:40px;width:40px;" /></td><td><a title="Samuro" href="/Sitewide/HeroDetails?Hero=Samuro">Samuro</a></td><td>8,331</td><td>3,548</td><td>14.5 %<div style='height: 4px; width: 14.547575861886352804109516500%; background-color: #60CDCD;'></div></td><td>54.4 %<div style='height: 4px; width: 91.88880139722371734981557798%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.3 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">萨穆罗,薩姆羅,Самуро,사무로,Samura</td>
+	</tr><tr class="rgAltRow" id="__3">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Azmodan.png" style="height:40px;width:40px;" /></td><td><a title="Azmodan" href="/Sitewide/HeroDetails?Hero=Azmodan">Azmodan</a></td><td>13,435</td><td>4,748</td><td>22.3 %<div style='height: 4px; width: 22.267747444791611502409574750%; background-color: #60CDCD;'></div></td><td>53.8 %<div style='height: 4px; width: 88.95151035090931305404139596%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.7 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">Asmodan,Азмодан,Azmodán,Azmadan,아즈모단,阿兹莫丹,阿茲莫丹</td>
+	</tr><tr class="rgRow" id="__4">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Sonya.png" style="height:40px;width:40px;" /></td><td><a title="Sonya" href="/Sitewide/HeroDetails?Hero=Sonya">Sonya</a></td><td>21,667</td><td>5,397</td><td>33.1 %<div style='height: 4px; width: 33.143833077371180426838955670%; background-color: #60CDCD;'></div></td><td>53.5 %<div style='height: 4px; width: 87.46816089709436869386493504%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.4 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">Sonia,Barbare,Barbarian,Barbarin,Bárbara,Соня,야만용사,野蛮人,소냐,野蠻人,桑娅,桑雅</td>
+	</tr><tr class="rgAltRow" id="__5">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Gazlowe.png" style="height:40px;width:40px;" /></td><td><a title="Gazlowe" href="/Sitewide/HeroDetails?Hero=Gazlowe">Gazlowe</a></td><td>4,192</td><td>427</td><td>5.7 %<div style='height: 4px; width: 5.656642217867923529100248900%; background-color: #60CDCD;'></div></td><td>53.2 %<div style='height: 4px; width: 85.76959697134432865844244510%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.3 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">Gazleu,Gazol,Sparachiodi,ГАЗЛОУ,Gasganete,가즈로,加兹鲁维,加茲魯維</td>
+	</tr><tr class="rgRow" id="__6">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Nazeebo.png" style="height:40px;width:40px;" /></td><td><a title="Nazeebo" href="/Sitewide/HeroDetails?Hero=Nazeebo">Nazeebo</a></td><td>25,318</td><td>2,740</td><td>34.4 %<div style='height: 4px; width: 34.361131705767092093417359530%; background-color: #60CDCD;'></div></td><td>53.2 %<div style='height: 4px; width: 85.57193841553957218084517085%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.3 %</td><td style="display:none;">Specialist</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Witch Doctor,Féticheur,Hexendoktor,Medico Brujo,Szaman,Sciamano,Nasibo,Nazebo,Назибо,Nazibo,나지보,纳兹波,納奇班</td>
+	</tr><tr class="rgAltRow" id="__7">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Rexxar.png" style="height:40px;width:40px;" /></td><td><a title="Rexxar" href="/Sitewide/HeroDetails?Hero=Rexxar">Rexxar</a></td><td>3,136</td><td>727</td><td>4.7 %<div style='height: 4px; width: 4.7308094582428639517025896300%; background-color: #60CDCD;'></div></td><td>53.1 %<div style='height: 4px; width: 85.25866539588209735517961511%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.5 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">Рексар,雷克萨,雷克薩,렉사르</td>
+	</tr><tr class="rgRow" id="__8">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Ragnaros.png" style="height:40px;width:40px;" /></td><td><a title="Ragnaros" href="/Sitewide/HeroDetails?Hero=Ragnaros">Ragnaros</a></td><td>11,294</td><td>13,730</td><td>30.6 %<div style='height: 4px; width: 30.645554202192448233861144950%; background-color: #60CDCD;'></div></td><td>52.8 %<div style='height: 4px; width: 83.27037973913047730080977198%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.9 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">拉格納羅斯,拉格纳罗斯,라그나로스,Рагнарос</td>
+	</tr><tr class="rgAltRow" id="__9">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/DVa.png" style="height:40px;width:40px;" /></td><td><a title="D.Va" href="/Sitewide/HeroDetails?Hero=D.Va">D.Va</a></td><td>15,340</td><td>6,862</td><td>27.2 %<div style='height: 4px; width: 27.189601758195202033575173440%; background-color: #60CDCD;'></div></td><td>52.7 %<div style='height: 4px; width: 82.90688132731542916143221218%; background-color: #3BE33B;'></div></td><td>&nbsp;</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">D.Va</td>
+	</tr><tr class="rgRow" id="__10">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/TheButcher.png" style="height:40px;width:40px;" /></td><td><a title="The Butcher" href="/Sitewide/HeroDetails?Hero=The Butcher">The Butcher</a></td><td>8,054</td><td>1,454</td><td>11.6 %<div style='height: 4px; width: 11.643938992744796907271090400%; background-color: #60CDCD;'></div></td><td>52.6 %<div style='height: 4px; width: 82.55362717344637921676656555%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.1 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">El Carnicero,O Açougueiro,屠夫,도살자,Der Schlächter,Мясник,Le Boucher,Macellaio,Rzeźnik</td>
+	</tr><tr class="rgAltRow" id="__11">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Uther.png" style="height:40px;width:40px;" /></td><td><a title="Uther" href="/Sitewide/HeroDetails?Hero=Uther">Uther</a></td><td>20,403</td><td>3,886</td><td>29.7 %<div style='height: 4px; width: 29.745439019223640311391198430%; background-color: #60CDCD;'></div></td><td>52.6 %<div style='height: 4px; width: 82.52682922962866999494984806%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.7 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">УТЕР,우서,乌瑟尔,烏瑟</td>
+	</tr><tr class="rgRow" id="__12">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Murky.png" style="height:40px;width:40px;" /></td><td><a title="Murky" href="/Sitewide/HeroDetails?Hero=Murky">Murky</a></td><td>2,770</td><td>337</td><td>3.8 %<div style='height: 4px; width: 3.8049766986178043743049303600%; background-color: #60CDCD;'></div></td><td>52.6 %<div style='height: 4px; width: 82.44365375728395907548803402%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.1 %</td><td style="display:none;">Specialist</td><td style="display:none;">Utility</td><td style="display:none;">Bourbie,Męcik,Fosky,МУРЧАЛЬ,Murquinho,머키,鱼人,奔波尔霸,莫奇</td>
+	</tr><tr class="rgAltRow" id="__13">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Artanis.png" style="height:40px;width:40px;" /></td><td><a title="Artanis" href="/Sitewide/HeroDetails?Hero=Artanis">Artanis</a></td><td>22,774</td><td>4,585</td><td>33.5 %<div style='height: 4px; width: 33.505103797066144150823492030%; background-color: #60CDCD;'></div></td><td>52.2 %<div style='height: 4px; width: 80.09343074463031161141657387%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.3 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">아르타니스,亞坦尼斯,阿塔尼斯,Артанис</td>
+	</tr><tr class="rgRow" id="__14">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Brightwing.png" style="height:40px;width:40px;" /></td><td><a title="Brightwing" href="/Sitewide/HeroDetails?Hero=Brightwing">Brightwing</a></td><td>15,362</td><td>4,445</td><td>24.3 %<div style='height: 4px; width: 24.256573372875072816819361330%; background-color: #60CDCD;'></div></td><td>52.1 %<div style='height: 4px; width: 79.67954336804068861403425353%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.1 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">Luisaile,Funkelchen,Alafeliz,Jasnoskrzydła,Alachiara,СВЕТИК,Alasol,Asaluz,빛나래,光明之翼,亮翼</td>
+	</tr><tr class="rgAltRow" id="__15">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/SgtHammer.png" style="height:40px;width:40px;" /></td><td><a title="Sgt. Hammer" href="/Sitewide/HeroDetails?Hero=Sgt. Hammer">Sgt. Hammer</a></td><td>3,373</td><td>889</td><td>5.2 %<div style='height: 4px; width: 5.2194434147116453953291320200%; background-color: #60CDCD;'></div></td><td>52.1 %<div style='height: 4px; width: 79.55862761000901749038433614%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.3 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">Sgt Marteau,Sergeant Hammer,Sgto. Hammer,Sierżant Petarda,Sergente Hammer,Sgto. Martillo,Сержант Кувалда,Sargento Maza,Sgt. Marreta,해머 상사,重锤军士,榔頭中士,Sierż. Petarda</td>
+	</tr><tr class="rgRow" id="__16">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Malfurion.png" style="height:40px;width:40px;" /></td><td><a title="Malfurion" href="/Sitewide/HeroDetails?Hero=Malfurion">Malfurion</a></td><td>35,089</td><td>28,843</td><td>78.3 %<div style='height: 4px; width: 78.294100513689562039930095850%; background-color: #60CDCD;'></div></td><td>51.5 %<div style='height: 4px; width: 76.590538451681748454366623090%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.2 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">МАЛФУРИОН,말퓨리온,玛法里奥,瑪法里恩</td>
+	</tr><tr class="rgAltRow" id="__17">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Greymane.png" style="height:40px;width:40px;" /></td><td><a title="Greymane" href="/Sitewide/HeroDetails?Hero=Greymane">Greymane</a></td><td>18,545</td><td>2,944</td><td>26.3 %<div style='height: 4px; width: 26.316428798390086321029497430%; background-color: #60CDCD;'></div></td><td>51.5 %<div style='height: 4px; width: 76.451391101471528368923868100%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.3 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Cringris,Cringrís,Graumähne,Grisetête,Mantogrigio,Szarogrzywy,Седогрив,格雷迈恩,葛雷邁恩,그레이메인</td>
+	</tr><tr class="rgRow" id="__18">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Jaina.png" style="height:40px;width:40px;" /></td><td><a title="Jaina" href="/Sitewide/HeroDetails?Hero=Jaina">Jaina</a></td><td>14,818</td><td>1,355</td><td>19.8 %<div style='height: 4px; width: 19.806207964836095959328496530%; background-color: #60CDCD;'></div></td><td>51.5 %<div style='height: 4px; width: 76.439337480995414458006684070%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.5 %</td><td style="display:none;">Assassin</td><td style="display:none;">Burst Damage</td><td style="display:none;">Джайна,제이나,珍娜,吉安娜</td>
+	</tr><tr class="rgAltRow" id="__19">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Rehgar.png" style="height:40px;width:40px;" /></td><td><a title="Rehgar" href="/Sitewide/HeroDetails?Hero=Rehgar">Rehgar</a></td><td>15,937</td><td>1,818</td><td>21.7 %<div style='height: 4px; width: 21.743598739607053963882857600%; background-color: #60CDCD;'></div></td><td>51.5 %<div style='height: 4px; width: 76.404460356675180243514569770%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">2.0 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">РЕГАР,레가르,雷加尔,雷加</td>
+	</tr><tr class="rgRow" id="__20">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Sylvanas.png" style="height:40px;width:40px;" /></td><td><a title="Sylvanas" href="/Sitewide/HeroDetails?Hero=Sylvanas">Sylvanas</a></td><td>19,015</td><td>24,734</td><td>53.6 %<div style='height: 4px; width: 53.577060054016840544405020390%; background-color: #60CDCD;'></div></td><td>51.3 %<div style='height: 4px; width: 75.326218713214087648231013940%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.6 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">Sylvana,希尔瓦娜斯,希瓦娜斯,실바나스,Sylwana,Сильвана</td>
+	</tr><tr class="rgAltRow" id="__21">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Kerrigan.png" style="height:40px;width:40px;" /></td><td><a title="Kerrigan" href="/Sitewide/HeroDetails?Hero=Kerrigan">Kerrigan</a></td><td>5,186</td><td>609</td><td>7.1 %<div style='height: 4px; width: 7.0968265106180162050521633200%; background-color: #60CDCD;'></div></td><td>51.1 %<div style='height: 4px; width: 74.617426676273946188622223370%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.4 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">КЕРРИГАН,케리건,凯瑞甘,凱莉根</td>
+	</tr><tr class="rgRow" id="__22">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Zagara.png" style="height:40px;width:40px;" /></td><td><a title="Zagara" href="/Sitewide/HeroDetails?Hero=Zagara">Zagara</a></td><td>7,736</td><td>1,028</td><td>10.7 %<div style='height: 4px; width: 10.732801991209023989832124130%; background-color: #60CDCD;'></div></td><td>51.1 %<div style='height: 4px; width: 74.409030749103066187625565190%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.1 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">ЗАГАРА,자가라,扎加拉,札迦拉</td>
+	</tr><tr class="rgAltRow" id="__23">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Arthas.png" style="height:40px;width:40px;" /></td><td><a title="Arthas" href="/Sitewide/HeroDetails?Hero=Arthas">Arthas</a></td><td>23,708</td><td>13,957</td><td>46.1 %<div style='height: 4px; width: 46.126310702748503945347667210%; background-color: #60CDCD;'></div></td><td>51.1 %<div style='height: 4px; width: 74.239779871467948977452176130%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.4 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">АРТАС,아서스,阿尔萨斯,阿薩斯,Артас</td>
+	</tr><tr class="rgRow" id="__24">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Kaelthas.png" style="height:40px;width:40px;" /></td><td><a title="Kael&#39;thas" href="/Sitewide/HeroDetails?Hero=Kael&#39;thas">Kael'thas</a></td><td>27,719</td><td>13,590</td><td>50.6 %<div style='height: 4px; width: 50.588922575861886352804109520%; background-color: #60CDCD;'></div></td><td>50.9 %<div style='height: 4px; width: 73.403275026678107005726063170%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.1 %</td><td style="display:none;">Assassin</td><td style="display:none;">Burst Damage</td><td style="display:none;">Kael’thas,캘타스,凱爾薩斯,凯尔萨斯,Кель'тас</td>
+	</tr><tr class="rgAltRow" id="__25">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Valla.png" style="height:40px;width:40px;" /></td><td><a title="Valla" href="/Sitewide/HeroDetails?Hero=Valla">Valla</a></td><td>30,254</td><td>4,752</td><td>42.9 %<div style='height: 4px; width: 42.869975639464068209500609010%; background-color: #60CDCD;'></div></td><td>50.4 %<div style='height: 4px; width: 70.667198284726210548550099930%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.9 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Vala,Demon Hunter,Chasseuse De Demons,Dämonenjägerin,Cazadora de demonios,Łowczyni Demonów,Cacciatrice di Demoni,Валла,Tyla,Caçadora de Demônios,악마사냥꾼,발라,猎魔人,狩魔獵人,维拉,維拉</td>
+	</tr><tr class="rgRow" id="__26">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Johanna.png" style="height:40px;width:40px;" /></td><td><a title="Johanna" href="/Sitewide/HeroDetails?Hero=Johanna">Johanna</a></td><td>16,517</td><td>3,570</td><td>24.6 %<div style='height: 4px; width: 24.599474394958428215855531430%; background-color: #60CDCD;'></div></td><td>50.3 %<div style='height: 4px; width: 70.292464307249716495363454270%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.1 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">요한나,Джоанна,乔汉娜,喬安娜</td>
+	</tr><tr class="rgAltRow" id="__27">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Zuljin.png" style="height:40px;width:40px;" /></td><td><a title="Zul&#39;jin" href="/Sitewide/HeroDetails?Hero=Zul&#39;jin">Zul'jin</a></td><td>6,125</td><td>383</td><td>8.0 %<div style='height: 4px; width: 7.969999470423131917597839330%; background-color: #60CDCD;'></div></td><td>50.3 %<div style='height: 4px; width: 69.968109981598986042060032540%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-2.0 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Zul’jin,祖爾金,祖尔金,줄진,Зул'джин</td>
+	</tr><tr class="rgRow" id="__28">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/LiLi.png" style="height:40px;width:40px;" /></td><td><a title="Li Li" href="/Sitewide/HeroDetails?Hero=Li Li">Li Li</a></td><td>20,491</td><td>4,416</td><td>30.5 %<div style='height: 4px; width: 30.502270560821903299263888150%; background-color: #60CDCD;'></div></td><td>50.1 %<div style='height: 4px; width: 69.322660685716010430483277520%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-3.4 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">ЛИ ЛИ,리 리,丽丽,莉莉</td>
+	</tr><tr class="rgAltRow" id="__29">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Kharazim.png" style="height:40px;width:40px;" /></td><td><a title="Kharazim" href="/Sitewide/HeroDetails?Hero=Kharazim">Kharazim</a></td><td>12,602</td><td>519</td><td>16.1 %<div style='height: 4px; width: 16.068586824127522109834242440%; background-color: #60CDCD;'></div></td><td>50.0 %<div style='height: 4px; width: 68.525656299494022173321933640%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.4 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">克拉辛,卡拉辛姆,카라짐,Каразим</td>
+	</tr><tr class="rgRow" id="__30">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Leoric.png" style="height:40px;width:40px;" /></td><td><a title="Leoric" href="/Sitewide/HeroDetails?Hero=Leoric">Leoric</a></td><td>9,903</td><td>651</td><td>12.9 %<div style='height: 4px; width: 12.924919239527617433670497270%; background-color: #60CDCD;'></div></td><td>49.8 %<div style='height: 4px; width: 67.633499498232494990042033010%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.9 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">Leoryk,Леорик,李奥瑞克,李奧瑞克,레오릭,Léoric</td>
+	</tr><tr class="rgAltRow" id="__31">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Tracer.png" style="height:40px;width:40px;" /></td><td><a title="Tracer" href="/Sitewide/HeroDetails?Hero=Tracer">Tracer</a></td><td>5,106</td><td>429</td><td>6.8 %<div style='height: 4px; width: 6.7784184186834719059471482300%; background-color: #60CDCD;'></div></td><td>49.6 %<div style='height: 4px; width: 66.638031301546601236238105910%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.2 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Трейсер,Smuga,猎空,트레이서,閃光</td>
+	</tr><tr class="rgRow" id="__32">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Tyrael.png" style="height:40px;width:40px;" /></td><td><a title="Tyrael" href="/Sitewide/HeroDetails?Hero=Tyrael">Tyrael</a></td><td>7,026</td><td>288</td><td>9.0 %<div style='height: 4px; width: 8.957064555420219244823386110%; background-color: #60CDCD;'></div></td><td>49.4 %<div style='height: 4px; width: 65.172386045051322222275019950%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.8 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">ТИРАЭЛЬ,Tyraël,티리엘,泰瑞尔,泰瑞爾</td>
+	</tr><tr class="rgAltRow" id="__33">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Varian.png" style="height:40px;width:40px;" /></td><td><a title="Varian" href="/Sitewide/HeroDetails?Hero=Varian">Varian</a></td><td>29,078</td><td>15,075</td><td>54.1 %<div style='height: 4px; width: 54.071817243022824763014351530%; background-color: #60CDCD;'></div></td><td>49.3 %<div style='height: 4px; width: 64.934832420222353243725952740%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.5 %</td><td style="display:none;">Assassin</td><td style="display:none;">Bruiser</td><td style="display:none;">瓦里安,바리안,Вариан,바리인</td>
+	</tr><tr class="rgRow" id="__34">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Nova.png" style="height:40px;width:40px;" /></td><td><a title="Nova" href="/Sitewide/HeroDetails?Hero=Nova">Nova</a></td><td>6,585</td><td>867</td><td>9.1 %<div style='height: 4px; width: 9.126065773447015834348355660%; background-color: #60CDCD;'></div></td><td>49.0 %<div style='height: 4px; width: 63.280868026913158517231689960%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.3 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">НОВА,노바,诺娃,諾娃</td>
+	</tr><tr class="rgAltRow" id="__35">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Guldan.png" style="height:40px;width:40px;" /></td><td><a title="Gul&#39;dan" href="/Sitewide/HeroDetails?Hero=Gul&#39;dan">Gul'dan</a></td><td>19,062</td><td>12,066</td><td>38.1 %<div style='height: 4px; width: 38.120796483609595932849653130%; background-color: #60CDCD;'></div></td><td>48.9 %<div style='height: 4px; width: 62.458162916101179047889119950%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.0 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">古爾丹,古尔丹,Gul’dan,굴단,Гул'дан</td>
+	</tr><tr class="rgRow" id="__36">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Chen.png" style="height:40px;width:40px;" /></td><td><a title="Chen" href="/Sitewide/HeroDetails?Hero=Chen">Chen</a></td><td>3,014</td><td>119</td><td>3.8 %<div style='height: 4px; width: 3.8368175078112588042154318700%; background-color: #60CDCD;'></div></td><td>48.8 %<div style='height: 4px; width: 62.130027076189754552386283680%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.3 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">Чэнь,Czen,첸,老陳,陈</td>
+	</tr><tr class="rgAltRow" id="__37">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Xul.png" style="height:40px;width:40px;" /></td><td><a title="Xul" href="/Sitewide/HeroDetails?Hero=Xul">Xul</a></td><td>3,390</td><td>502</td><td>4.8 %<div style='height: 4px; width: 4.7663242069586400466027643900%; background-color: #60CDCD;'></div></td><td>48.7 %<div style='height: 4px; width: 61.417829426692007936780617600%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.2 %</td><td style="display:none;">Specialist</td><td style="display:none;">Siege</td><td style="display:none;">蘇爾,祖尔,줄,Зул</td>
+	</tr><tr class="rgRow" id="__38">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Zarya.png" style="height:40px;width:40px;" /></td><td><a title="Zarya" href="/Sitewide/HeroDetails?Hero=Zarya">Zarya</a></td><td>9,550</td><td>1,726</td><td>13.8 %<div style='height: 4px; width: 13.809114017899698141185193030%; background-color: #60CDCD;'></div></td><td>48.6 %<div style='height: 4px; width: 61.068516329417828668192478950%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.8 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">札莉雅,查莉娅,자리야,Zaria,Заря,자라야</td>
+	</tr><tr class="rgAltRow" id="__39">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/LtMorales.png" style="height:40px;width:40px;" /></td><td><a title="Lt. Morales" href="/Sitewide/HeroDetails?Hero=Lt. Morales">Lt. Morales</a></td><td>8,285</td><td>5,019</td><td>16.3 %<div style='height: 4px; width: 16.292697134989143674204310760%; background-color: #60CDCD;'></div></td><td>48.6 %<div style='height: 4px; width: 60.996307124921331252626045120%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.1 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">Lt Morales,Ten. Morales,Teniente Morales,Tte. Morales,莫拉莉斯中尉,모랄레스 중위,Лейтенант Моралес,莫拉萊斯中尉,Por. Morales</td>
+	</tr><tr class="rgRow" id="__40">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Lunara.png" style="height:40px;width:40px;" /></td><td><a title="Lunara" href="/Sitewide/HeroDetails?Hero=Lunara">Lunara</a></td><td>8,401</td><td>774</td><td>11.2 %<div style='height: 4px; width: 11.236131705767092093417359530%; background-color: #60CDCD;'></div></td><td>48.4 %<div style='height: 4px; width: 60.207950551783439866520638800%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.2 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">露娜拉,루나라,Лунара,AyHapa</td>
+	</tr><tr class="rgAltRow" id="__41">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Genji.png" style="height:40px;width:40px;" /></td><td><a title="Genji" href="/Sitewide/HeroDetails?Hero=Genji">Genji</a></td><td>14,907</td><td>10,451</td><td>31.1 %<div style='height: 4px; width: 31.054586135677593602711433560%; background-color: #60CDCD;'></div></td><td>48.4 %<div style='height: 4px; width: 59.743267947032742222771554650%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.6 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Гэндзи,源氏,겐지</td>
+	</tr><tr class="rgRow" id="__42">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Stitches.png" style="height:40px;width:40px;" /></td><td><a title="Stitches" href="/Sitewide/HeroDetails?Hero=Stitches">Stitches</a></td><td>9,940</td><td>349</td><td>12.6 %<div style='height: 4px; width: 12.600387915055870359582693430%; background-color: #60CDCD;'></div></td><td>48.3 %<div style='height: 4px; width: 59.529559658538501673136073500%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.8 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">Kleiner,Puntos,Zszywaniec,Tritacarne,Balafré,СТЕЖОК,Suturino,누더기,缝合怪,縫合怪</td>
+	</tr><tr class="rgAltRow" id="__43">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Diablo.png" style="height:40px;width:40px;" /></td><td><a title="Diablo" href="/Sitewide/HeroDetails?Hero=Diablo">Diablo</a></td><td>19,551</td><td>3,664</td><td>28.4 %<div style='height: 4px; width: 28.430168670232484245088174550%; background-color: #60CDCD;'></div></td><td>48.3 %<div style='height: 4px; width: 59.200155449704013110792073400%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.3 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">ДИАБЛО,Диабло,디아블로,迪亚波罗,迪亞布羅</td>
+	</tr><tr class="rgRow" id="__44">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Chromie.png" style="height:40px;width:40px;" /></td><td><a title="Chromie" href="/Sitewide/HeroDetails?Hero=Chromie">Chromie</a></td><td>7,848</td><td>2,626</td><td>12.8 %<div style='height: 4px; width: 12.826947518932373033945877240%; background-color: #60CDCD;'></div></td><td>48.2 %<div style='height: 4px; width: 58.700770224550565185809166540%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.0 %</td><td style="display:none;">Assassin</td><td style="display:none;">Burst Damage</td><td style="display:none;">Crona,Cromi,克罗米,克羅米,Chronia,Cromie,Хроми,크로미</td>
+	</tr><tr class="rgAltRow" id="__45">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Falstad.png" style="height:40px;width:40px;" /></td><td><a title="Falstad" href="/Sitewide/HeroDetails?Hero=Falstad">Falstad</a></td><td>15,172</td><td>10,526</td><td>31.5 %<div style='height: 4px; width: 31.470965948207382301541068690%; background-color: #60CDCD;'></div></td><td>48.0 %<div style='height: 4px; width: 58.043813533077447791014037180%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.5 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">ФАЛСТАД,폴스타트,弗斯塔德</td>
+	</tr><tr class="rgRow" id="__46">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Illidan.png" style="height:40px;width:40px;" /></td><td><a title="Illidan" href="/Sitewide/HeroDetails?Hero=Illidan">Illidan</a></td><td>6,127</td><td>718</td><td>8.4 %<div style='height: 4px; width: 8.382705343430598951437801200%; background-color: #60CDCD;'></div></td><td>48.0 %<div style='height: 4px; width: 57.732633294936216865879211730%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">2.0 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">ИЛЛИДАН,일리단,伊利丹</td>
+	</tr><tr class="rgAltRow" id="__47">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Cassia.png" style="height:40px;width:40px;" /></td><td><a title="Cassia" href="/Sitewide/HeroDetails?Hero=Cassia">Cassia</a></td><td>6,196</td><td>626</td><td>8.4 %<div style='height: 4px; width: 8.354538473759466186516972940%; background-color: #60CDCD;'></div></td><td>48.0 %<div style='height: 4px; width: 57.723197231457821281225302620%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.8 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Cássia,Kasja,Кассия,카시아,卡西娅,卡西雅</td>
+	</tr><tr class="rgRow" id="__48">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Raynor.png" style="height:40px;width:40px;" /></td><td><a title="Raynor" href="/Sitewide/HeroDetails?Hero=Raynor">Raynor</a></td><td>7,925</td><td>154</td><td>9.9 %<div style='height: 4px; width: 9.893919133612243817190065140%; background-color: #60CDCD;'></div></td><td>47.9 %<div style='height: 4px; width: 57.478703164818639289854502820%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.2 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">РЕЙНОР,레이너,雷诺,雷諾</td>
+	</tr><tr class="rgAltRow" id="__49">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Auriel.png" style="height:40px;width:40px;" /></td><td><a title="Auriel" href="/Sitewide/HeroDetails?Hero=Auriel">Auriel</a></td><td>17,298</td><td>8,514</td><td>31.6 %<div style='height: 4px; width: 31.610575650055605571148652230%; background-color: #60CDCD;'></div></td><td>47.7 %<div style='height: 4px; width: 56.391371058131320411197829320%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.1 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">Ауриэль,奥莉尔,奧莉爾,아우리엘</td>
+	</tr><tr class="rgRow" id="__50">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Lúcio.png" style="height:40px;width:40px;" /></td><td><a title="Lúcio" href="/Sitewide/HeroDetails?Hero=Lúcio">Lúcio</a></td><td>14,388</td><td>22,319</td><td>45.0 %<div style='height: 4px; width: 44.953099348620452258645342370%; background-color: #60CDCD;'></div></td><td>47.5 %<div style='height: 4px; width: 55.202515334229788834194772210%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-2.5 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">Lucio,Лусио,루시우,卢西奥,路西歐</td>
+	</tr><tr class="rgAltRow" id="__51">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/TheLostVikings.png" style="height:40px;width:40px;" /></td><td><a title="The Lost Vikings" href="/Sitewide/HeroDetails?Hero=The Lost Vikings">The Lost Vikings</a></td><td>882</td><td>629</td><td>1.9 %<div style='height: 4px; width: 1.8504408727426785997987607900%; background-color: #60CDCD;'></div></td><td>47.1 %<div style='height: 4px; width: 52.741230485214114518780447250%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-2.5 %</td><td style="display:none;">Specialist</td><td style="display:none;">Utility</td><td style="display:none;">Os Vikings Perdidos,Потерявшиеся викинги,Los Vikingos perdidos,Les Vikings perdus,Vichinghi Sperduti,Zaginieni Wikingowie,Lost Vikings,失落的維京人,失落的维京人,길 잃은 바이킹</td>
+	</tr><tr class="rgRow" id="__52">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Tychus.png" style="height:40px;width:40px;" /></td><td><a title="Tychus" href="/Sitewide/HeroDetails?Hero=Tychus">Tychus</a></td><td>8,084</td><td>847</td><td>10.9 %<div style='height: 4px; width: 10.937317957951596674257268440%; background-color: #60CDCD;'></div></td><td>47.0 %<div style='height: 4px; width: 52.628883679471704336030123440%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.0 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">ТАЙКУС,타이커스,泰凯斯,泰科斯</td>
+	</tr><tr class="rgAltRow" id="__53">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/LiMing.png" style="height:40px;width:40px;" /></td><td><a title="Li-Ming" href="/Sitewide/HeroDetails?Hero=Li-Ming">Li-Ming</a></td><td>23,736</td><td>3,987</td><td>34.0 %<div style='height: 4px; width: 33.950875125774506169570513160%; background-color: #60CDCD;'></div></td><td>47.0 %<div style='height: 4px; width: 52.463772273031859005836029730%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.5 %</td><td style="display:none;">Assassin</td><td style="display:none;">Burst Damage</td><td style="display:none;">李敏,리밍,Ли-Мин</td>
+	</tr><tr class="rgRow" id="__54">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Thrall.png" style="height:40px;width:40px;" /></td><td><a title="Thrall" href="/Sitewide/HeroDetails?Hero=Thrall">Thrall</a></td><td>5,662</td><td>179</td><td>7.2 %<div style='height: 4px; width: 7.1531602499602817348938198400%; background-color: #60CDCD;'></div></td><td>46.9 %<div style='height: 4px; width: 51.786736567607399455193726690%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.3 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Тралл,萨尔,스랄,索爾</td>
+	</tr><tr class="rgAltRow" id="__55">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Zeratul.png" style="height:40px;width:40px;" /></td><td><a title="Zeratul" href="/Sitewide/HeroDetails?Hero=Zeratul">Zeratul</a></td><td>6,540</td><td>1,596</td><td>10.0 %<div style='height: 4px; width: 9.963723984536355451993856910%; background-color: #60CDCD;'></div></td><td>46.7 %<div style='height: 4px; width: 51.00460946584485721225749900%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.1 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">ЗЕРАТУЛ,제라툴,泽拉图,澤拉圖</td>
+	</tr><tr class="rgRow" id="__56">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Alarak.png" style="height:40px;width:40px;" /></td><td><a title="Alarak" href="/Sitewide/HeroDetails?Hero=Alarak">Alarak</a></td><td>13,950</td><td>4,075</td><td>22.1 %<div style='height: 4px; width: 22.074253296616003812953450190%; background-color: #60CDCD;'></div></td><td>46.1 %<div style='height: 4px; width: 47.721548072414826764423035610%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.8 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">亞拉瑞克,阿拉纳克,알라라크,Аларак</td>
+	</tr><tr class="rgAltRow" id="__57">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Tyrande.png" style="height:40px;width:40px;" /></td><td><a title="Tyrande" href="/Sitewide/HeroDetails?Hero=Tyrande">Tyrande</a></td><td>11,312</td><td>737</td><td>14.8 %<div style='height: 4px; width: 14.755765768151247153524334060%; background-color: #60CDCD;'></div></td><td>45.3 %<div style='height: 4px; width: 43.295970731248352945796773190%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-2.8 %</td><td style="display:none;">Support</td><td style="display:none;">Healer</td><td style="display:none;">ТИРАНДА,티란데,泰兰德,泰蘭妲</td>
+	</tr><tr class="rgRow" id="__58">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Valeera.png" style="height:40px;width:40px;" /></td><td><a title="Valeera" href="/Sitewide/HeroDetails?Hero=Valeera">Valeera</a></td><td>6,434</td><td>11,347</td><td>21.8 %<div style='height: 4px; width: 21.775439548800508393793359110%; background-color: #60CDCD;'></div></td><td>45.1 %<div style='height: 4px; width: 42.393658257761448435786033190%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.5 %</td><td style="display:none;">Assassin</td><td style="display:none;">Ambusher</td><td style="display:none;">Valira,Валира,瓦莉拉,瓦麗拉,발리라</td>
+	</tr><tr class="rgAltRow" id="__59">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Dehaka.png" style="height:40px;width:40px;" /></td><td><a title="Dehaka" href="/Sitewide/HeroDetails?Hero=Dehaka">Dehaka</a></td><td>9,065</td><td>15,454</td><td>30.0 %<div style='height: 4px; width: 30.027107715934967960599481010%; background-color: #60CDCD;'></div></td><td>45.0 %<div style='height: 4px; width: 41.915280222987624840540870620%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-5.2 %</td><td style="display:none;">Warrior</td><td style="display:none;">Bruiser</td><td style="display:none;">Дехака,데하카,德哈卡</td>
+	</tr><tr class="rgRow" id="__60">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/ETC.png" style="height:40px;width:40px;" /></td><td><a title="E.T.C." href="/Sitewide/HeroDetails?Hero=E.T.C.">E.T.C.</a></td><td>9,095</td><td>3,823</td><td>15.8 %<div style='height: 4px; width: 15.819983583117089445533019120%; background-color: #60CDCD;'></div></td><td>44.1 %<div style='height: 4px; width: 37.057664261602693101250049750%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">1.3 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">ETC,C.T.E.,정예 타우렌 족장,精英牛头人酋长,精英牛頭大佬</td>
+	</tr><tr class="rgAltRow" id="__61">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Muradin.png" style="height:40px;width:40px;" /></td><td><a title="Muradin" href="/Sitewide/HeroDetails?Hero=Muradin">Muradin</a></td><td>17,586</td><td>1,709</td><td>23.6 %<div style='height: 4px; width: 23.629554361065508658581793150%; background-color: #60CDCD;'></div></td><td>44.0 %<div style='height: 4px; width: 36.220463257269074568725550070%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.3 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">МУРАДИН,무라딘,穆拉丁</td>
+	</tr><tr class="rgRow" id="__62">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Abathur.png" style="height:40px;width:40px;" /></td><td><a title="Abathur" href="/Sitewide/HeroDetails?Hero=Abathur">Abathur</a></td><td>4,523</td><td>934</td><td>6.7 %<div style='height: 4px; width: 6.682895991103108616215643700%; background-color: #60CDCD;'></div></td><td>43.6 %<div style='height: 4px; width: 34.016368470374418968288006420%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-1.3 %</td><td style="display:none;">Specialist</td><td style="display:none;">Utility</td><td style="display:none;">Abatur,АБАТУР,아바투르,阿巴瑟</td>
+	</tr><tr class="rgAltRow" id="__63">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Tassadar.png" style="height:40px;width:40px;" /></td><td><a title="Tassadar" href="/Sitewide/HeroDetails?Hero=Tassadar">Tassadar</a></td><td>3,271</td><td>496</td><td>4.6 %<div style='height: 4px; width: 4.613243393528570672033045600%; background-color: #60CDCD;'></div></td><td>40.0 %<div style='height: 4px; width: 14.914547974777718930928628300%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">0.7 %</td><td style="display:none;">Support</td><td style="display:none;">Support</td><td style="display:none;">ТАССАДАР,태사다르,塔萨达尔,塔薩達,Тассадар</td>
+	</tr><tr class="rgRow" id="__64">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Cho.png" style="height:40px;width:40px;" /></td><td><a title="Cho" href="/Sitewide/HeroDetails?Hero=Cho">Cho</a></td><td>112</td><td>243</td><td>0.4 %<div style='height: 4px; width: 0.4347495101413970237780013800%; background-color: #60CDCD;'></div></td><td>39.3 %<div style='height: 4px; width: 11.155339397592050121238454350%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">6.2 %</td><td style="display:none;">Warrior</td><td style="display:none;">Tank</td><td style="display:none;">Чо,초,古,Czo,丘,Cha,Che</td>
+	</tr><tr class="rgAltRow" id="__65">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Gall.png" style="height:40px;width:40px;" /></td><td><a title="Gall" href="/Sitewide/HeroDetails?Hero=Gall">Gall</a></td><td>112</td><td>182</td><td>0.4 %<div style='height: 4px; width: 0.3600460731875231689879786100%; background-color: #60CDCD;'></div></td><td>39.3 %<div style='height: 4px; width: 11.155339397592050121238454350%; background-color: #3BE33B;'></div></td><td style="color:#3BE33B;">6.2 %</td><td style="display:none;">Assassin</td><td style="display:none;">Sustained Damage</td><td style="display:none;">Галл,갈,加尔,Gal,加利</td>
+	</tr><tr class="rgRow" id="__66">
+		<td class="ImageGradientBorder" align="center"><img id="imgcolumn" src="//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/Medivh.png" style="height:40px;width:40px;" /></td><td><a title="Medivh" href="/Sitewide/HeroDetails?Hero=Medivh">Medivh</a></td><td>1,680</td><td>110</td><td>2.2 %<div style='height: 4px; width: 2.1921172483185934438383731400%; background-color: #60CDCD;'></div></td><td>37.2 %<div style='height: 4px; width: 0%; background-color: #3BE33B;'></div></td><td style="color:#FF4500;">-0.5 %</td><td style="display:none;">Specialist</td><td style="display:none;">Support</td><td style="display:none;">麥迪文,麦迪文,메디브,Медив</td>
+	</tr>
+	</tbody>
+
+</table><div id="SharedCalendarContainer" style="display:none;">
+
+</div><input id="RadGridCharacterStatistics_ClientState" name="RadGridCharacterStatistics_ClientState" type="hidden" />	</div>
+
+
+
+                    <div id="advertisementBannerMonkeyBrokerBottom" style="text-align: center; margin-top: 15px;" class="advertisementBannerMonkeyBrokerBottom">
+                        <script type="text/javascript">
+
+                            if (typeof MonkeyBroker === "object")
+                            {
+                                if (windowWidth >= 1300) {
+                                    MonkeyBroker.fillSlot("Horizontal_2");
+                                    ga("send", "event", "AdFillMonkeyBroker", "Horizontal_2", { nonInteraction: true });
+                                }
+                                else if (windowWidth > 728) {
+                                    MonkeyBroker.fillSlot("Horizontal_2_Thin");
+                                    ga("send", "event", "AdFillMonkeyBroker", "Horizontal_2_Thin", { nonInteraction: true });
+                                }
+                                else {
+                                    MonkeyBroker.fillSlot("Horizontal_2_Mobile");
+                                    ga("send", "event", "AdFillMonkeyBroker", "Horizontal_2_Mobile", { nonInteraction: true });
+                                }
+                            }
+
+                        </script>
+                    </div>
+                </section>
+            </div>
+
+            <aside id="footer-widgets" class="no-print">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <ul class="list-unstyled">
+                                <li><a href="/Info/About">About Us</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-unstyled" style="text-align: center;">
+                                <li><a href="/Info/FAQ">Frequently Asked Questions</a></li>
+                                <li><a href="/Info/MMRInformation">MMR Information</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="ctl00_DropDownLanguage" class="RadDropDownList RadDropDownList_Black" style="color: black; display: block; margin-left: auto;">
+	<span class="rddlInner"><span class="rddlFakeInput">English</span><span class="rddlSelect"><span class="p-icon p-i-arrow-60-down"></span></span></span><div class="rddlSlide" id="ctl00_DropDownLanguage_DropDown" style="display:none;">
+		<div class="rddlPopup rddlPopup_Black">
+			<ul class="rddlList">
+				<li class="rddlItem  rddlItemSelected">English</li><li class="rddlItem">Ceština</li><li class="rddlItem">Dansk</li><li class="rddlItem">Deutsch</li><li class="rddlItem">Español</li><li class="rddlItem">Suomi</li><li class="rddlItem">Français</li><li class="rddlItem">Magyar</li><li class="rddlItem">한국어</li><li class="rddlItem">Nederlands</li><li class="rddlItem">Polski</li><li class="rddlItem">Pусский</li><li class="rddlItem">简体中文</li><li class="rddlItem">繁體中文</li>
+			</ul>
+		</div>
+	</div><input id="ctl00_DropDownLanguage_ClientState" name="ctl00_DropDownLanguage_ClientState" type="hidden" />
+</div>
+                            <div style="margin-top: 5px; text-align: right;">
+                                <div id="ctl00_DropDownSiteSkin" class="RadDropDownList RadDropDownList_Black" style="color: black; display: block; margin-left: auto;">
+	<span class="rddlInner"><span class="rddlFakeInput">Dark</span><span class="rddlSelect"><span class="p-icon p-i-arrow-60-down"></span></span></span><div class="rddlSlide" id="ctl00_DropDownSiteSkin_DropDown" style="display:none;">
+		<div class="rddlPopup rddlPopup_Black">
+			<ul class="rddlList">
+				<li class="rddlItem  rddlItemSelected">Dark</li><li class="rddlItem">Light</li>
+			</ul>
+		</div>
+	</div><input id="ctl00_DropDownSiteSkin_ClientState" name="ctl00_DropDownSiteSkin_ClientState" type="hidden" />
+</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                        </div>
+                    </div> <!-- row -->
+                </div> <!-- container -->
+            </aside> <!-- footer-widgets -->
+
+            <footer id="footer" class="no-print"><p>&copy; 2017 - HOTS Logs</p></footer>
+
+
+<script type="text/javascript">
+//<![CDATA[
+Sys.Application.add_init(function() {
+    $create(Telerik.Web.UI.RadGrid, {"ClientID":"RadGridCharacterStatistics","ClientSettings":{"AllowAutoScrollOnDragDrop":true,"ShouldCreateRows":true,"DataBinding":{},"Selecting":{"CellSelectionMode":0},"Scrolling":{},"Resizing":{},"ClientMessages":{},"KeyboardNavigationSettings":{"AllowActiveRowCycle":false,"EnableKeyboardShortcuts":true,"FocusKey":89,"InitInsertKey":73,"RebindKey":82,"ExitEditInsertModeKey":27,"UpdateInsertItemKey":13,"DeleteActiveRow":127,"ExpandDetailTableKey":39,"CollapseDetailTableKey":37,"MoveDownKey":40,"MoveUpKey":38,"SaveChangesKey":85,"CancelChangesKey":81},"Animation":{},"Virtualization":{}},"Skin":"Black","UniqueID":"ctl00$MainContent$RadGridCharacterStatistics","_activeRowIndex":"","_controlToFocus":"","_currentPageIndex":0,"_defaultDateTimeFormat":"M/d/yyyy h:mm:ss tt","_editIndexes":"[]","_embeddedSkin":true,"_freezeText":"Freeze","_gridTableViewsData":"[{\"ClientID\":\"\",\"UniqueID\":\"ctl00$MainContent$RadGridCharacterStatistics$ctl00\",\"PageSize\":10,\"PageCount\":1,\"EditMode\":\"EditForms\",\"AllowPaging\":false,\"CurrentPageIndex\":0,\"VirtualItemCount\":0,\"AllowMultiColumnSorting\":false,\"AllowNaturalSort\":true,\"AllowFilteringByColumn\":false,\"PageButtonCount\":10,\"HasDetailTables\":false,\"HasMultiHeaders\":false,\"CheckListWebServicePath\":\"\",\"GroupLoadMode\":\"Server\",\"PagerAlwaysVisible\":false,\"IsItemInserted\":false,\"clientDataKeyNames\":[],\"hasDetailItemTemplate\":false,\"_dataBindTemplates\":false,\"_selectedItemStyle\":\"\",\"_selectedItemStyleClass\":\"rgSelectedRow\",\"_columnsData\":[{\"UniqueName\":\"column\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridImageColumn\",\"ColumnGroupName\":\"\",\"Editable\":false,\"DataTypeName\":\"System.String\",\"DataAlternateTextField\":\"\",\"DataAlternateTextFormatString\":\"\",\"DataImageUrlFields\":[\"HeroPortraitURL\"],\"ImageHeight\":\"40px\",\"ImageWidth\":\"40px\",\"DataImageUrlFormatString\":\"//d1i1jxrdh2kvwy.cloudfront.net/Images/Heroes/Portraits/{0}.png\",\"Display\":true},{\"UniqueName\":\"Character\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridHyperLinkColumn\",\"ColumnGroupName\":\"\",\"Editable\":false,\"DataTypeName\":\"System.String\",\"DataTextField\":\"Character\",\"DataTextFormatString\":\"\",\"DataNavigateUrlFields\":[\"CharacterURL\"],\"DataNavigateUrlFormatString\":\"/Sitewide/HeroDetails?Hero={0}\",\"Display\":true},{\"UniqueName\":\"GamesPlayed\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.Int32\",\"DataField\":\"GamesPlayed\",\"DataFormatString\":\"{0:N0}\",\"Display\":true},{\"UniqueName\":\"GamesBanned\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.Int32\",\"DataField\":\"GamesBanned\",\"DataFormatString\":\"{0:N0}\",\"Display\":true},{\"UniqueName\":\"Popularity\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.String\",\"DataField\":\"Popularity\",\"Display\":true},{\"UniqueName\":\"WinPercent\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.String\",\"DataField\":\"WinPercent\",\"Display\":true},{\"UniqueName\":\"WinPercentDelta\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.Decimal\",\"DataField\":\"WinPercentDelta\",\"DataFormatString\":\"{0:p1}\",\"Display\":true},{\"UniqueName\":\"Role\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.String\",\"DataField\":\"Role\",\"Display\":false},{\"UniqueName\":\"SubRole\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.String\",\"DataField\":\"SubRole\",\"Display\":false},{\"UniqueName\":\"AliasCSV\",\"Resizable\":true,\"Reorderable\":true,\"Selectable\":true,\"Groupable\":true,\"ColumnType\":\"GridBoundColumn\",\"ColumnGroupName\":\"\",\"Editable\":true,\"DataTypeName\":\"System.String\",\"DataField\":\"AliasCSV\",\"Display\":false}]}]","_masterClientID":"","_shouldFocusOnPage":false,"_unfreezeText":"Unfreeze","allowMultiRowSelection":false,"clientStateFieldID":"RadGridCharacterStatistics_ClientState","expandItems":{},"renderMode":2}, null, null, $get("RadGridCharacterStatistics"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Web.UI.RadDropDownList, {"_postBackReference":"__doPostBack(\u0027ctl00$DropDownLanguage\u0027,\u0027arguments\u0027)","_selectedIndex":0,"_selectedText":"English","_selectedValue":"en","_uniqueId":"ctl00$DropDownLanguage","attributes":{},"autoPostBack":true,"clientStateFieldID":"ctl00_DropDownLanguage_ClientState","expandDirection":0,"itemData":[{"value":"en","selected":true},{"value":"cs"},{"value":"da"},{"value":"de"},{"value":"es"},{"value":"fi"},{"value":"fr"},{"value":"hu"},{"value":"ko"},{"value":"nl"},{"value":"pl"},{"value":"ru"},{"value":"zh-Hans"},{"value":"zh-Hant"}]}, null, null, $get("ctl00_DropDownLanguage"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Web.UI.RadDropDownList, {"_postBackReference":"__doPostBack(\u0027ctl00$DropDownSiteSkin\u0027,\u0027arguments\u0027)","_selectedIndex":0,"_selectedText":"Dark","_selectedValue":"Dark","_uniqueId":"ctl00$DropDownSiteSkin","attributes":{},"autoPostBack":true,"clientStateFieldID":"ctl00_DropDownSiteSkin_ClientState","expandDirection":0,"itemData":[{"value":"Dark","selected":true},{"value":"Light"}]}, null, null, $get("ctl00_DropDownSiteSkin"));
+});
+//]]>
+</script>
+</form>
+
+        <div id="back-top"><a href="#header"><i class="fa fa-chevron-up"></i></a></div>
+
+
+            <script type="text/javascript">
+                var _comscore = _comscore || [];
+                _comscore.push({ c1: "2", c2: "6036197" });
+                (function() {
+                    var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+                    s.src = (document.location.protocol === "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+                    el.parentNode.insertBefore(s, el);
+                })();
+            </script>
+            <noscript><img src="http://b.scorecardresearch.com/p?c1=2&c2=6036197&cv=2.0&cj=1" /></noscript>
+
+
+    </body>
+</html>
