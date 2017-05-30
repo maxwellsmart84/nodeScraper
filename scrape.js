@@ -1,12 +1,12 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');
+const moment = require('moment');
 
-
+let timeOfSave;
 
 async function getHotsData (req, res) {
     const heroData = [];
-    // const url = 'https://www.hotslogs.com/Default';
     const offlineSite = fs.readFileSync('hotsLogs.html');
     const $ = cheerio.load(offlineSite);
     const heroCount = $('tbody tr').length - 1;
@@ -23,9 +23,9 @@ async function getHotsData (req, res) {
       heroData.push(hero);
     }
     const parsedData = JSON.stringify(heroData);
-    fs.writeFile('wtf.json', parsedData, (err) => {
-      console.log('File written');
-    });
+    // fs.writeFile('wtf.json', parsedData, (err) => {
+    //   console.log('File written');
+    // });
     //  await request(url, (err ,res, html) => {
     //   if(err) {
     //     throw new Error(err);
@@ -54,7 +54,23 @@ async function getHotsData (req, res) {
       // }
     // }
   // });
-  res.send('Check console!')
+  res.send(heroData);
+}
+
+function savePage(fileName, pageData) {
+  fs.writeFileSync(`${fileName}`, pageData);
+}
+
+function updateBaseData(fileName) {
+  const url = 'https://www.hotslogs.com/Default';
+  const now = new Date();
+  const threeHours = F
+  if (Math.floor((now - timeOfSave)/60000) < 3) {
+    const page = await request(url, (req, res, err) => {
+    })
+    await savePage()
+    timeOfSave = moment.now();
+  }
 }
 
 module.exports = {
