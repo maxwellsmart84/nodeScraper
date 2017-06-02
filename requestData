@@ -1,0 +1,18 @@
+ctl00$ctl14:ctl00$MainContent$ctl00$MainContent$divControlContainerPanel|ctl00$MainContent$ComboBoxReplayDateTime
+ctl14_TSM:;;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:en-US:0f2ae90c-87fb-4f74-9210-4b167170d85e:ea597d4b:b25378d2;Telerik.Web.UI, Version=2017.1.228.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4:en-US:b7c0ed1c-66b0-411f-9d0a-18294380a077:16e4e7cd:f7645509:2003d0b8:24ee1bba:f46195d3:33715776:c128760b:88144a7a:1e771326:aa288e2d:b092aa46:6b3f73b3:58366029:ed16cbdc;
+ctl00$ctl40:
+ctl00$MainContent$ComboBoxReplayDateTime:Week of 5/21/2017 - 5/27/2017
+ctl00_MainContent_ComboBoxReplayDateTime_ClientState:{"logEntries":[],"value":"","text":"Week of 5/21/2017 - 5/27/2017","enabled":true,"checkedIndices":[2],"checkedItemsTextOverflows":false}
+ctl00$MainContent$ComboBoxLeague:All Leagues
+ComboBoxLeague_ClientState:
+ctl00_MainContent_DropDownWinRateByTalent_ClientState:
+ctl00_MainContent_DropDownGameMode_ClientState:
+ctl00$MainContent$ComboBoxMapName:All Maps
+ctl00_MainContent_ComboBoxMapName_ClientState:
+ctl00$MainContent$ComboBoxGameLength:All Game Lengths
+ctl00_MainContent_ComboBoxGameLength_ClientState:
+ctl00$MainContent$ComboBoxCharacterLevel:Hero Level 5+
+ctl00_MainContent_ComboBoxCharacterLevel_ClientState:
+RadGridCharacterStatistics_ClientState:
+ctl00_DropDownLanguage_ClientState:
+ctl00_DropDownSiteSkin_ClientState:
