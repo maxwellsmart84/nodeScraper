@@ -7,12 +7,10 @@ const db = require('./db/query')
 let timeOfSave;
 
 
-function updateOverallStats(fileName) {
-  const url = 'https://www.hotslogs.com/Default';
+async function fetchFrontPageData() {
+  const $ = cheerio.load(url);
   const heroData = [];
   const heroCount = $('tbody tr').length - 1;
-  const now = new Date();
-  const $ = cheerio.load(offlineSite);
 
   for (let i = 0; i < heroCount; i++) {
     const data = $(`#__${i}`);
@@ -25,7 +23,30 @@ function updateOverallStats(fileName) {
     }
     heroData.push(hero);
   }
-  const parsedData = JSON.stringify(heroData);
+}
+
+function updateHeroData(data) {
+  const existingHeroes = await db.getHeroes();
+  if (existingHeroes && existingHeroes.length === data.length) {
+    for (let i = 0; i < existingHeroes.length; i++) {
+      const hero = existingHeroes[i];
+      await db.updateHero(hero.id, data);
+    }
+    const updatedHeroes = await constdb.getHeroes();
+    console.log('data updated');
+    return sendResponseData(updatedHeroes);
+  } else {
+    //this is the first time getting data
+  }
+}
+
+
+async function setSiteData(err, timeStamp) {
+  return const siteData = {
+    lastUpdated: timesStamp,
+    fetchOk: !err ? true : false;
+  }
+  await db.storeSiteData(siteData);
 }
 
 async function getHotsData (req, res) {
@@ -79,6 +100,16 @@ async function getHotsData (req, res) {
   // });
   res.send(heroData);
 }
+
+function sendResponseData(data){
+  return res.send(200, data)
+}
+
+function sendInternalError(data) {
+  return res.send(500, 'Internal Server Error');
+}
+
+function send
 
 function savePage(fileName, pageData) {
   fs.writeFileSync(`${fileName}`, pageData);

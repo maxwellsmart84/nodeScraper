@@ -3,18 +3,23 @@ const moment = require('moment');
 const uuid = require('uuid');
 
 
-const db.defaults({ heroes: [], siteData: {} }).write();
+const db.defaults({ heroData: [], siteData: {} }).write();
 
 //getters
 async function getHeroById(id) {
-  const data = await db.get('heroes')
+  const data = await db.get('heroData')
     .find({ id })
     .value();
   return data;
 }
 
 async function getHeroes() {
-  return db.get('heroes')
+  return db.get('heroData')
+    .value();
+}
+
+async function getSiteData() {
+  return db.get('siteData')
     .value();
 }
 
@@ -22,11 +27,12 @@ async function getHeroes() {
 async function storeHero(data) {
   const newData = data;
   newData.id = uuid();
-  const data = await db.get(heroes)
+  newData.timeStamp = new Date();
+  const data = await db.get(heroData)
     .push({newData})
     .write();
 
-  const heroes = await db.get('heroes')
+  const heroData = await db.get('heroData')
     .sortBy('winPercentage')
     .value();
   return heroes;
@@ -42,7 +48,6 @@ async function storeHeroes(data) {
 }
 
 async function updateHero(id, data) {
-  const newData = data;
   const hero = await getById(id, 'heroes');
 
   await db.get('heroes')
@@ -51,6 +56,14 @@ async function updateHero(id, data) {
     .write();
 
   return getHeroById(hero.id);
+}
+
+async function storeSiteData(data){
+    await db.set('siteData', data);
+}
+
+async function updateSiteData(data) {
+  const siteData = await get
 }
 
 
