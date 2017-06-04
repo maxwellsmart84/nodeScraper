@@ -24,7 +24,7 @@ async function getSiteData() {
 }
 
 //setters
-async function storeHero(data) {
+async function setHero(data) {
   const newData = data;
   newData.id = uuid();
   newData.timeStamp = new Date();
@@ -38,8 +38,12 @@ async function storeHero(data) {
   return heroes;
 }
 
-//expects an array
-async function storeHeroes(data) {
+//expects an array, only
+async function setHeroes(data) {
+  const newData = data;
+  for(i = 0; i < newData.length; i++) {
+    newData[i],id
+  }
   const newData = data;
   newData.id = uuid();
   await db.set('heroes', newData);
@@ -63,14 +67,19 @@ async function storeSiteData(data){
 }
 
 async function updateSiteData(data) {
-  const siteData = await get
+  await db.get('siteData')
+    .assign(data);
+    .write();
+
+  return getSiteData();
 }
 
 
 module.exports({
   getHeroById,
   getHeroes,
-  storeHero,
+  setHero,
   storeHeroes,
   updateHero,
+  getSiteData,
 })

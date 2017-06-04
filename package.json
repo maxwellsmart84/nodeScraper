@@ -5,6 +5,8 @@
   "main": "server.js",
   "dependencies": {
     "cheerio": "^0.22.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
     "express": "^4.15.3",
     "lowdb": "^0.16.2",
     "moment": "^2.18.1",
@@ -13,7 +15,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "lint": "eslint .",
+    "start": "npm run nodemon server.js"
   },
   "author": "maxwell krause",
   "license": "ISC"
