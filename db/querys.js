@@ -1,9 +1,10 @@
-const db = low('db.json');
 const moment = require('moment');
 const uuid = require('uuid');
+const low = require('lowdb');
+const db = low('db.json');
 
 
-const db.defaults({ heroData: [], siteData: {} }).write();
+const defaults = db.defaults({ heroData: [], siteData: {} }).write();
 
 //getters
 async function getHeroById(id) {
@@ -15,6 +16,7 @@ async function getHeroById(id) {
 
 async function getHeroes() {
   return db.get('heroData')
+    .sortBy('winPercentage')
     .value();
 }
 
@@ -25,61 +27,56 @@ async function getSiteData() {
 
 //setters
 async function setHero(data) {
-  const newData = data;
-  newData.id = uuid();
-  newData.timeStamp = new Date();
-  const data = await db.get(heroData)
-    .push({newData})
+  await db.get('heroData')
+    .push(data)
     .write();
 
-  const heroData = await db.get('heroData')
-    .sortBy('winPercentage')
-    .value();
-  return heroes;
+  return getHeroes();
 }
 
 //expects an array, only
-async function setHeroes(data) {
-  const newData = data;
-  for(i = 0; i < newData.length; i++) {
-    newData[i],id
-  }
-  const newData = data;
-  newData.id = uuid();
-  await db.set('heroes', newData);
-  return db.get('heroes')
-    .vaule();
-}
+// async function setHeroes(data) {
+//   console.log('inside query setHeroes', data);
+//   const newData = data;
+//   for (let i = 0; i < newData.length; i++) {
+//     newData[i].id = uuid();
+//   }
+//   await db.set('heroes', newData);
+//
+//   return getHeroes();
+// }
 
 async function updateHero(id, data) {
-  const hero = await getById(id, 'heroes');
+  return db.get('heroData')
+    .find(id)
+    .assign(data)
+    .write();
+}
 
-  await db.get('heroes')
-    .find(hero.id)
+async function setSiteData(data){
+  db.get('siteData')
     .assign(data)
     .write();
 
-  return getHeroById(hero.id);
-}
-
-async function storeSiteData(data){
-    await db.set('siteData', data);
+  return getSiteData();
 }
 
 async function updateSiteData(data) {
   await db.get('siteData')
-    .assign(data);
+    .assign(data)
     .write();
 
   return getSiteData();
 }
 
 
-module.exports({
+module.exports = {
   getHeroById,
   getHeroes,
+  getSiteData,
   setHero,
-  storeHeroes,
   updateHero,
   getSiteData,
-})
+  setSiteData,
+  updateSiteData,
+}

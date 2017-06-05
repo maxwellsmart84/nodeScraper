@@ -1,24 +1,32 @@
 {
   "name": "nodescraper",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
     "cheerio": "^0.22.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.1",
     "express": "^4.15.3",
     "lowdb": "^0.16.2",
     "moment": "^2.18.1",
     "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "uuid": "^3.0.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "test",
     "lint": "eslint .",
-    "start": "npm run nodemon server.js"
+    "start": "nodemon server.js",
+    "debug": "node debug server.js"
   },
   "author": "maxwell krause",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxwellsmart84/nodeScraper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maxwellsmart84/nodeScraper/issues"
+  },
+  "homepage": "https://github.com/maxwellsmart84/nodeScraper#readme",
+  "description": ""
 }
