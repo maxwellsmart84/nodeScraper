@@ -21,7 +21,9 @@
   },
   "author": "maxwell krause",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "selenium-webdriver": "^3.4.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maxwellsmart84/nodeScraper.git"
