@@ -16,7 +16,7 @@ async function getHeroById(id) {
 
 async function getHeroes() {
   return db.get('heroData')
-    .sortBy('winPercentage')
+    .orderBy('winPercentage', 'desc')
     .value();
 }
 

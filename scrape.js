@@ -54,8 +54,8 @@ async function fetchFrontPageData() {
       name: data.find('td:nth-child(2)').text(),
       gamesPlayed: data.find('td:nth-child(3)').text(),
       gamesBanned: data.find('td:nth-child(4)').text(),
-      popularity: data.find('td:nth-child(5)').text(),
-      winPercentage: data.find('td:nth-child(6)').text(),
+      popularity: parseInt(stripSpecChars(data.find('td:nth-child(5)').text())),
+      winPercentage: parseInt(stripSpecChars(data.find('td:nth-child(6)').text())),
     }
     heroData.push(hero);
   }

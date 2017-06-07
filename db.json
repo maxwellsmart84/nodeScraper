@@ -4,533 +4,533 @@
       "name": "Samuro",
       "gamesPlayed": "7,483",
       "gamesBanned": "3,469",
-      "popularity": "14.4 %",
-      "winPercentage": "54.4 %",
-      "id": "b0f3d216-8333-4727-b344-289532cabe86"
+      "popularity": 144,
+      "winPercentage": 544,
+      "id": "0b41f414-a49a-43bd-84e3-2d7d30f37aaf"
     },
     {
       "name": "Azmodan",
       "gamesPlayed": "13,817",
       "gamesBanned": "6,023",
-      "popularity": "26.0 %",
-      "winPercentage": "54.1 %",
-      "id": "d74b4957-1840-4282-a1f2-98e1dce40ed9"
+      "popularity": 260,
+      "winPercentage": 541,
+      "id": "189d6788-1b56-46ce-9ea8-60786212dcb8"
     },
     {
       "name": "Probius",
       "gamesPlayed": "3,025",
       "gamesBanned": "744",
-      "popularity": "4.9 %",
-      "winPercentage": "53.7 %",
-      "id": "9db6d270-66ba-41b4-bd51-c562148a7426"
+      "popularity": 49,
+      "winPercentage": 537,
+      "id": "76fe5e95-ee4b-4baf-a504-4d79b885fdcb"
     },
     {
       "name": "Nazeebo",
       "gamesPlayed": "24,346",
       "gamesBanned": "3,033",
-      "popularity": "35.9 %",
-      "winPercentage": "53.3 %",
-      "id": "51f91553-f9e9-4a1a-a101-4de8572567cd"
+      "popularity": 359,
+      "winPercentage": 533,
+      "id": "af4f10e9-49d6-4c78-83fc-88317d7c35de"
     },
     {
       "name": "Anub'arak",
       "gamesPlayed": "24,499",
       "gamesBanned": "24,925",
-      "popularity": "64.8 %",
-      "winPercentage": "53.1 %",
-      "id": "327974be-76ec-44d9-92cc-3abe6c054aa0"
+      "popularity": 648,
+      "winPercentage": 531,
+      "id": "4c0cc5ff-7b5b-4b3c-bc46-2a87cda1a625"
     },
     {
       "name": "Uther",
       "gamesPlayed": "20,773",
       "gamesBanned": "5,116",
-      "popularity": "34.0 %",
-      "winPercentage": "53.1 %",
-      "id": "451a3bb1-0d02-43af-8d24-281078c04cd0"
+      "popularity": 340,
+      "winPercentage": 531,
+      "id": "80de5175-04f9-483d-bf6f-20cd90993d4b"
     },
     {
       "name": "Sonya",
       "gamesPlayed": "20,079",
       "gamesBanned": "5,086",
-      "popularity": "33.0 %",
-      "winPercentage": "52.7 %",
-      "id": "29b3e3b6-5220-4c83-9ea8-b2e82399a198"
+      "popularity": 330,
+      "winPercentage": 527,
+      "id": "6db5b21a-6ec0-4bb3-a8c9-80f2158f3ef2"
     },
     {
       "name": "The Butcher",
       "gamesPlayed": "7,914",
       "gamesBanned": "1,447",
-      "popularity": "12.3 %",
-      "winPercentage": "52.6 %",
-      "id": "4674c5bb-44c6-4e32-aa69-af173c2607cc"
+      "popularity": 123,
+      "winPercentage": 526,
+      "id": "daed4d14-7ebb-4c50-bc2f-ddd9546b9ad8"
     },
     {
       "name": "Artanis",
       "gamesPlayed": "20,378",
       "gamesBanned": "4,022",
-      "popularity": "32.0 %",
-      "winPercentage": "52.2 %",
-      "id": "d70bf432-5b2f-43d1-bab1-c904f0fb8e14"
+      "popularity": 320,
+      "winPercentage": 522,
+      "id": "cc32c990-d594-49c0-9296-387a11dea999"
     },
     {
       "name": "D.Va",
       "gamesPlayed": "12,427",
       "gamesBanned": "5,700",
-      "popularity": "23.8 %",
-      "winPercentage": "52.2 %",
-      "id": "058575a3-38e5-4d1e-9f2e-4268f2ed78b7"
+      "popularity": 238,
+      "winPercentage": 522,
+      "id": "7cb6f303-7e88-40ce-8b88-84cf34b5bb72"
     },
     {
       "name": "Ragnaros",
       "gamesPlayed": "10,095",
       "gamesBanned": "10,415",
-      "popularity": "26.9 %",
-      "winPercentage": "52.1 %",
-      "id": "10e2741a-428e-495d-8a88-1a93823fb1bd"
+      "popularity": 269,
+      "winPercentage": 521,
+      "id": "d25315b1-fcdb-41a4-8e95-835861ea06e2"
     },
     {
       "name": "Brightwing",
       "gamesPlayed": "14,771",
       "gamesBanned": "4,382",
-      "popularity": "25.1 %",
-      "winPercentage": "52.0 %",
-      "id": "f01fecc3-3b77-42a8-99e6-872b01bc314f"
+      "popularity": 251,
+      "winPercentage": 520,
+      "id": "fad2e671-44c4-4274-9b71-95629de47f6e"
     },
     {
       "name": "Kael'thas",
       "gamesPlayed": "25,514",
       "gamesBanned": "12,755",
-      "popularity": "50.2 %",
-      "winPercentage": "52.0 %",
-      "id": "6f8e43f2-2cff-4d7d-8501-a2e908753e39"
+      "popularity": 502,
+      "winPercentage": 520,
+      "id": "e1b2bea6-8f94-4a49-9ea3-da163ddb9db1"
     },
     {
       "name": "Gazlowe",
       "gamesPlayed": "3,917",
       "gamesBanned": "438",
-      "popularity": "5.7 %",
-      "winPercentage": "52.0 %",
-      "id": "c3f74d18-8a38-440a-adf2-7a9418d7da55"
+      "popularity": 57,
+      "winPercentage": 520,
+      "id": "3cadd71f-c8fa-4b96-92fe-c7e2aef2d158"
     },
     {
       "name": "Jaina",
       "gamesPlayed": "13,508",
       "gamesBanned": "1,143",
-      "popularity": "19.2 %",
-      "winPercentage": "51.8 %",
-      "id": "5bc85d6c-8774-4cb2-b14f-ef20ae5dfc3d"
+      "popularity": 192,
+      "winPercentage": 518,
+      "id": "6f3155ad-c60a-4088-a7ce-6e331e72d813"
     },
     {
       "name": "Murky",
       "gamesPlayed": "2,581",
       "gamesBanned": "332",
-      "popularity": "3.8 %",
-      "winPercentage": "51.8 %",
-      "id": "bfae425b-7ca2-49ac-8bae-bf582de2923d"
+      "popularity": 38,
+      "winPercentage": 518,
+      "id": "12f793f7-a1f8-4986-b93b-9a493b9b042b"
     },
     {
       "name": "Rexxar",
       "gamesPlayed": "2,845",
       "gamesBanned": "619",
-      "popularity": "4.5 %",
-      "winPercentage": "51.6 %",
-      "id": "0e3bff98-81ae-4aa4-aad8-ae3f7a63417d"
+      "popularity": 45,
+      "winPercentage": 516,
+      "id": "1a34bbf6-e82b-44b4-a281-6525e0f3c6fa"
     },
     {
       "name": "Malfurion",
       "gamesPlayed": "33,814",
       "gamesBanned": "27,791",
-      "popularity": "80.8 %",
-      "winPercentage": "51.5 %",
-      "id": "050c451a-d4cb-46df-89d5-3d4eb3d794de"
+      "popularity": 808,
+      "winPercentage": 515,
+      "id": "bd0e71ad-d27a-4f7f-83f7-76bfd161130c"
     },
     {
       "name": "Sgt. Hammer",
       "gamesPlayed": "3,319",
       "gamesBanned": "800",
-      "popularity": "5.4 %",
-      "winPercentage": "51.3 %",
-      "id": "96de14db-be23-4f19-9beb-cdc60b85846a"
+      "popularity": 54,
+      "winPercentage": 513,
+      "id": "4272f55a-5c0b-4ca8-a2dd-3280e034e6e6"
     },
     {
       "name": "Rehgar",
       "gamesPlayed": "15,602",
       "gamesBanned": "1,823",
-      "popularity": "22.9 %",
-      "winPercentage": "51.2 %",
-      "id": "c4fd15d1-548f-4442-a2c4-690b2c157948"
+      "popularity": 229,
+      "winPercentage": 512,
+      "id": "a0d9d98e-2896-4498-a9b4-eb68489b089c"
     },
     {
       "name": "Sylvanas",
       "gamesPlayed": "17,883",
       "gamesBanned": "26,446",
-      "popularity": "58.2 %",
-      "winPercentage": "51.2 %",
-      "id": "8c09037b-bdfe-4d69-8ab7-20b93f324a96"
+      "popularity": 582,
+      "winPercentage": 512,
+      "id": "c7970258-c4f3-41b5-880b-51615a310285"
     },
     {
       "name": "Zul'jin",
       "gamesPlayed": "5,200",
       "gamesBanned": "350",
-      "popularity": "7.3 %",
-      "winPercentage": "50.8 %",
-      "id": "7fb5ae87-d883-43b9-8751-d805c17084a5"
+      "popularity": 73,
+      "winPercentage": 508,
+      "id": "abe3570e-2707-4e87-85d4-16e5e0e1076e"
     },
     {
       "name": "Kerrigan",
       "gamesPlayed": "4,904",
       "gamesBanned": "513",
-      "popularity": "7.1 %",
-      "winPercentage": "50.7 %",
-      "id": "a4c952ce-2ee6-4a76-a7e0-47276e6a74f5"
+      "popularity": 71,
+      "winPercentage": 507,
+      "id": "1787fd4f-9d61-4451-8665-359bbb71fb76"
     },
     {
       "name": "Greymane",
       "gamesPlayed": "20,230",
       "gamesBanned": "3,634",
-      "popularity": "31.3 %",
-      "winPercentage": "50.7 %",
-      "id": "709157c0-5a0a-4312-b268-08faa28bd5bf"
+      "popularity": 313,
+      "winPercentage": 507,
+      "id": "c82cad40-1397-480a-9d90-fb823e993c0b"
     },
     {
       "name": "Zagara",
       "gamesPlayed": "7,875",
       "gamesBanned": "1,341",
-      "popularity": "12.1 %",
-      "winPercentage": "50.6 %",
-      "id": "d031fb19-70a2-43b0-8945-666f0076eb13"
+      "popularity": 121,
+      "winPercentage": 506,
+      "id": "6a55bf35-a023-4dc4-a53a-9395e7017570"
     },
     {
       "name": "Arthas",
       "gamesPlayed": "21,799",
       "gamesBanned": "12,007",
-      "popularity": "44.4 %",
-      "winPercentage": "50.5 %",
-      "id": "43b4abe5-8df2-41ad-a76f-7d614b3f83b4"
+      "popularity": 444,
+      "winPercentage": 505,
+      "id": "6ba71915-5b4f-4d44-9590-f64e337c1393"
     },
     {
       "name": "Kharazim",
       "gamesPlayed": "11,598",
       "gamesBanned": "460",
-      "popularity": "15.8 %",
-      "winPercentage": "50.5 %",
-      "id": "d217cd50-2130-40be-8617-d17f28350476"
+      "popularity": 158,
+      "winPercentage": 505,
+      "id": "a791ae9e-968c-4ae8-8b67-7317877ed1d4"
     },
     {
       "name": "Dehaka",
       "gamesPlayed": "10,284",
       "gamesBanned": "12,658",
-      "popularity": "30.1 %",
-      "winPercentage": "50.5 %",
-      "id": "8483c7f6-9758-47b2-a682-a9520df49d0e"
+      "popularity": 301,
+      "winPercentage": 505,
+      "id": "14da97e8-f304-4b20-ab63-8f0b04caf373"
     },
     {
       "name": "Valla",
       "gamesPlayed": "28,951",
       "gamesBanned": "4,886",
-      "popularity": "44.4 %",
-      "winPercentage": "50.3 %",
-      "id": "5b6c4b91-2deb-45ba-a796-9f97d3a52fca"
+      "popularity": 444,
+      "winPercentage": 503,
+      "id": "e8c3e570-1932-46e5-a08c-349f3ea24505"
     },
     {
       "name": "Chen",
       "gamesPlayed": "3,161",
       "gamesBanned": "125",
-      "popularity": "4.3 %",
-      "winPercentage": "50.1 %",
-      "id": "25fdccaa-0482-46f5-b2d3-7657c3066643"
+      "popularity": 43,
+      "winPercentage": 501,
+      "id": "a8ec408f-de7d-4fcd-ad33-b113a07f9cc7"
     },
     {
       "name": "Tyrael",
       "gamesPlayed": "6,527",
       "gamesBanned": "268",
-      "popularity": "8.9 %",
-      "winPercentage": "50.1 %",
-      "id": "1e9f6ee5-1e20-4fce-8f75-282c76cd5b87"
+      "popularity": 89,
+      "winPercentage": 501,
+      "id": "3087a4fc-cd87-4d13-9824-857b95cd9369"
     },
     {
       "name": "Varian",
       "gamesPlayed": "27,341",
       "gamesBanned": "14,784",
-      "popularity": "55.3 %",
-      "winPercentage": "49.7 %",
-      "id": "4800d1b2-d222-4aec-8741-89237a045b82"
+      "popularity": 553,
+      "winPercentage": 497,
+      "id": "24217155-ff39-4e15-bcff-e7344254c878"
     },
     {
       "name": "Tracer",
       "gamesPlayed": "5,267",
       "gamesBanned": "492",
-      "popularity": "7.6 %",
-      "winPercentage": "49.7 %",
-      "id": "a7418a56-b39f-4e48-bd14-b7cd5d2f0f65"
+      "popularity": 76,
+      "winPercentage": 497,
+      "id": "2aeb703a-8988-4980-a13c-edc3ceb8b959"
     },
     {
       "name": "Johanna",
       "gamesPlayed": "16,062",
       "gamesBanned": "3,497",
-      "popularity": "25.7 %",
-      "winPercentage": "49.5 %",
-      "id": "d0dccf44-cd3d-4c75-921c-016b932e7f7d"
+      "popularity": 257,
+      "winPercentage": 495,
+      "id": "9376d2e5-f2bf-4896-bde3-d03cbcc308a3"
     },
     {
       "name": "Leoric",
       "gamesPlayed": "10,395",
       "gamesBanned": "781",
-      "popularity": "14.7 %",
-      "winPercentage": "49.1 %",
-      "id": "a9dc6d38-60a8-445c-bbcf-217c20c24260"
+      "popularity": 147,
+      "winPercentage": 491,
+      "id": "74b57dfa-7989-497a-8d37-3fe23e4239a4"
     },
     {
       "name": "Li Li",
       "gamesPlayed": "17,178",
       "gamesBanned": "3,077",
-      "popularity": "26.6 %",
-      "winPercentage": "49.1 %",
-      "id": "74e4d110-168b-4f33-b2b1-722a1f11f1db"
+      "popularity": 266,
+      "winPercentage": 491,
+      "id": "6be05fd6-759b-4c19-9c2d-c8c49bcdcbf9"
     },
     {
       "name": "Lt. Morales",
       "gamesPlayed": "7,635",
       "gamesBanned": "4,709",
-      "popularity": "16.2 %",
-      "winPercentage": "48.9 %",
-      "id": "c572565a-2096-4d82-82ba-c9a6c89aeb7d"
+      "popularity": 162,
+      "winPercentage": 489,
+      "id": "6c9ec14d-3b10-4aa2-8f04-6fade18e3c2f"
     },
     {
       "name": "Xul",
       "gamesPlayed": "3,484",
       "gamesBanned": "424",
-      "popularity": "5.1 %",
-      "winPercentage": "48.9 %",
-      "id": "58a2f428-2b17-4ab9-98dc-95cd05a7480b"
+      "popularity": 51,
+      "winPercentage": 489,
+      "id": "5bf2a6fb-34d7-4ec1-86b6-a162a2540433"
     },
     {
       "name": "Stitches",
       "gamesPlayed": "10,466",
       "gamesBanned": "518",
-      "popularity": "14.4 %",
-      "winPercentage": "48.6 %",
-      "id": "8734ed48-d811-4e03-8318-36c59cd23979"
+      "popularity": 144,
+      "winPercentage": 486,
+      "id": "8a0fa983-d83e-4daa-aa62-ff527fb36904"
     },
     {
       "name": "Raynor",
       "gamesPlayed": "7,345",
       "gamesBanned": "149",
-      "popularity": "9.8 %",
-      "winPercentage": "48.6 %",
-      "id": "611effd3-e028-4da3-8cac-a840ab1f2f6e"
+      "popularity": 98,
+      "winPercentage": 486,
+      "id": "a04f832a-9bcf-4d6a-aa3f-a950e34cd004"
     },
     {
       "name": "Gul'dan",
       "gamesPlayed": "17,419",
       "gamesBanned": "11,073",
-      "popularity": "37.4 %",
-      "winPercentage": "48.5 %",
-      "id": "d3684d8b-d944-48b5-a068-79f3542e9b7a"
+      "popularity": 374,
+      "winPercentage": 485,
+      "id": "2b019593-e113-41fc-a667-04a81a339591"
     },
     {
       "name": "Genji",
       "gamesPlayed": "15,659",
       "gamesBanned": "12,138",
-      "popularity": "36.5 %",
-      "winPercentage": "48.5 %",
-      "id": "8da42c1d-59cc-42da-9b76-570400546289"
+      "popularity": 365,
+      "winPercentage": 485,
+      "id": "4df833e0-6950-4a6a-931f-a0155b77c8e4"
     },
     {
       "name": "Nova",
       "gamesPlayed": "6,123",
       "gamesBanned": "850",
-      "popularity": "9.1 %",
-      "winPercentage": "48.4 %",
-      "id": "dfa567ba-d243-4b12-a93a-3b7337d2b891"
+      "popularity": 91,
+      "winPercentage": 484,
+      "id": "078e21e5-565c-4a53-9a86-ffb982abefc3"
     },
     {
       "name": "Zarya",
       "gamesPlayed": "7,870",
       "gamesBanned": "1,079",
-      "popularity": "11.7 %",
-      "winPercentage": "48.4 %",
-      "id": "7b57c81c-8069-4496-928e-a66dd2b22877"
+      "popularity": 117,
+      "winPercentage": 484,
+      "id": "97eebdf1-877f-425b-8451-e0fdf3e66975"
     },
     {
       "name": "Falstad",
       "gamesPlayed": "14,817",
       "gamesBanned": "9,651",
-      "popularity": "32.1 %",
-      "winPercentage": "48.4 %",
-      "id": "5e70e77f-4ac3-4c34-b5d4-7e2506853349"
+      "popularity": 321,
+      "winPercentage": 484,
+      "id": "fe6b84ce-1541-4c0d-affb-bc8075145756"
     },
     {
       "name": "Lunara",
       "gamesPlayed": "7,850",
       "gamesBanned": "721",
-      "popularity": "11.2 %",
-      "winPercentage": "48.4 %",
-      "id": "167521cc-99ec-47d5-9c2a-cd160a3b61f3"
+      "popularity": 112,
+      "winPercentage": 484,
+      "id": "eade4668-4441-40e3-80b1-3c1a3ffcff2c"
     },
     {
       "name": "Illidan",
       "gamesPlayed": "6,073",
       "gamesBanned": "742",
-      "popularity": "8.9 %",
-      "winPercentage": "48.2 %",
-      "id": "c80302e9-e0a0-4061-94de-1dc9faff66f0"
+      "popularity": 89,
+      "winPercentage": 482,
+      "id": "f3b59732-54e4-4e8a-9cbf-6a5167cc6539"
     },
     {
       "name": "Diablo",
       "gamesPlayed": "18,619",
       "gamesBanned": "3,296",
-      "popularity": "28.8 %",
-      "winPercentage": "48.2 %",
-      "id": "61362e96-0534-4071-a131-f3b761179c88"
+      "popularity": 288,
+      "winPercentage": 482,
+      "id": "162a5223-6d94-4f5f-ade3-b9179b37c3ac"
     },
     {
       "name": "Cassia",
       "gamesPlayed": "5,573",
       "gamesBanned": "414",
-      "popularity": "7.9 %",
-      "winPercentage": "47.9 %",
-      "id": "d20685ad-5d62-4e25-845d-d1a867279790"
+      "popularity": 79,
+      "winPercentage": 479,
+      "id": "e5cb59aa-0562-4612-ac2d-104e01d4bd4d"
     },
     {
       "name": "Alarak",
       "gamesPlayed": "10,398",
       "gamesBanned": "1,850",
-      "popularity": "16.1 %",
-      "winPercentage": "47.8 %",
-      "id": "a626b753-5da8-47cb-8ecf-ec1a30fdff19"
+      "popularity": 161,
+      "winPercentage": 478,
+      "id": "8d237269-37e3-4ad1-92f2-fc6f3f066dc4"
     },
     {
       "name": "Tychus",
       "gamesPlayed": "8,021",
       "gamesBanned": "774",
-      "popularity": "11.5 %",
-      "winPercentage": "47.5 %",
-      "id": "3b4f3779-f116-4990-a88d-dc5fcf7faaf2"
+      "popularity": 115,
+      "winPercentage": 475,
+      "id": "9ff69f2c-d6f9-461f-adf1-9a5247686d82"
     },
     {
       "name": "Auriel",
       "gamesPlayed": "15,514",
       "gamesBanned": "7,799",
-      "popularity": "30.6 %",
-      "winPercentage": "47.5 %",
-      "id": "4784565b-ef94-4f52-a258-642e647785bd"
+      "popularity": 306,
+      "winPercentage": 475,
+      "id": "ea068368-6325-48dd-a545-f08854bf3634"
     },
     {
       "name": "Thrall",
       "gamesPlayed": "5,455",
       "gamesBanned": "166",
-      "popularity": "7.4 %",
-      "winPercentage": "46.9 %",
-      "id": "8c3dcfa1-caae-4650-951e-35cfc47e2a7d"
+      "popularity": 74,
+      "winPercentage": 469,
+      "id": "8db930b3-ca62-48fc-9298-50017b0078d6"
     },
     {
       "name": "Tassadar",
       "gamesPlayed": "5,615",
       "gamesBanned": "1,020",
-      "popularity": "8.7 %",
-      "winPercentage": "46.8 %",
-      "id": "c14f574e-1117-40b5-85b0-bb0e318cd387"
+      "popularity": 87,
+      "winPercentage": 468,
+      "id": "956c9137-cec5-4404-9603-efa5a3b70091"
     },
     {
       "name": "Chromie",
       "gamesPlayed": "6,806",
       "gamesBanned": "2,024",
-      "popularity": "11.6 %",
-      "winPercentage": "46.8 %",
-      "id": "afbfd5c4-a9f9-4ea4-a655-c50ff814feeb"
+      "popularity": 116,
+      "winPercentage": 468,
+      "id": "4d6ce979-4ec1-418c-a146-fe60c957c9df"
     },
     {
       "name": "Zeratul",
       "gamesPlayed": "6,270",
       "gamesBanned": "1,302",
-      "popularity": "9.9 %",
-      "winPercentage": "46.6 %",
-      "id": "ab44ce74-16d9-42ed-9122-aa128624599f"
+      "popularity": 99,
+      "winPercentage": 466,
+      "id": "6ed5c6db-8937-43a3-b4bd-da0ea01632a6"
     },
     {
       "name": "Li-Ming",
       "gamesPlayed": "22,214",
       "gamesBanned": "3,441",
-      "popularity": "33.7 %",
-      "winPercentage": "46.4 %",
-      "id": "11d21652-b3b2-476d-98ed-55c1e4aa956d"
+      "popularity": 337,
+      "winPercentage": 464,
+      "id": "79b3082b-7d42-4d55-b3b1-f0f5f481bb24"
     },
     {
       "name": "E.T.C.",
       "gamesPlayed": "8,088",
       "gamesBanned": "2,446",
-      "popularity": "13.8 %",
-      "winPercentage": "46.3 %",
-      "id": "0ff10251-be0b-448a-ab52-2b273d8d432a"
+      "popularity": 138,
+      "winPercentage": 463,
+      "id": "f78934b1-5f47-43d8-9eda-ead037c38a51"
     },
     {
       "name": "Lúcio",
       "gamesPlayed": "12,151",
       "gamesBanned": "11,731",
-      "popularity": "31.3 %",
-      "winPercentage": "46.2 %",
-      "id": "58972898-4708-47b0-8722-2612d676fbfb"
+      "popularity": 313,
+      "winPercentage": 462,
+      "id": "0f714fcd-597e-49ee-aa25-90b428f935bb"
     },
     {
       "name": "The Lost Vikings",
       "gamesPlayed": "740",
       "gamesBanned": "378",
-      "popularity": "1.5 %",
-      "winPercentage": "46.2 %",
-      "id": "fc49601a-c10b-452e-806a-fb7d199234a8"
+      "popularity": 15,
+      "winPercentage": 462,
+      "id": "49eba525-a99a-422d-93a6-97786b9d83f5"
     },
     {
       "name": "Tyrande",
       "gamesPlayed": "7,853",
       "gamesBanned": "404",
-      "popularity": "10.8 %",
-      "winPercentage": "45.1 %",
-      "id": "4c0fc53f-597c-469c-baec-a38268aa3442"
+      "popularity": 108,
+      "winPercentage": 451,
+      "id": "d780dad4-0216-4a9b-a91f-859c75d21d41"
     },
     {
       "name": "Valeera",
       "gamesPlayed": "5,314",
       "gamesBanned": "8,890",
-      "popularity": "18.6 %",
-      "winPercentage": "44.9 %",
-      "id": "f70d0b67-9d7e-45fe-b571-e7e2888c2f84"
+      "popularity": 186,
+      "winPercentage": 449,
+      "id": "9e94e0eb-8912-4225-8511-d4d1d42708f1"
     },
     {
       "name": "Muradin",
       "gamesPlayed": "16,380",
       "gamesBanned": "1,479",
-      "popularity": "23.4 %",
-      "winPercentage": "44.5 %",
-      "id": "f18aec2c-d85c-4047-bdcd-d98f914005dd"
+      "popularity": 234,
+      "winPercentage": 445,
+      "id": "fff22e02-61cd-427c-bf2f-5ad895664deb"
     },
     {
       "name": "Abathur",
       "gamesPlayed": "4,224",
       "gamesBanned": "906",
-      "popularity": "6.7 %",
-      "winPercentage": "43.9 %",
-      "id": "63cc36d5-b232-4dbe-a49e-430dfca41e20"
+      "popularity": 67,
+      "winPercentage": 439,
+      "id": "32cdc4a6-a7dc-4428-9a71-9e8f74bddbe2"
     },
     {
       "name": "Cho",
       "gamesPlayed": "147",
       "gamesBanned": "218",
-      "popularity": "0.5 %",
-      "winPercentage": "43.5 %",
-      "id": "a52b279b-80d4-477a-b660-ded909ebf1bb"
+      "popularity": 5,
+      "winPercentage": 435,
+      "id": "777cd433-1613-4a36-a8ba-a4d6dbb8a3ea"
     },
     {
       "name": "Gall",
       "gamesPlayed": "146",
       "gamesBanned": "179",
-      "popularity": "0.4 %",
-      "winPercentage": "43.2 %",
-      "id": "4866d151-6b2d-4287-9236-e9cfaf439da1"
+      "popularity": 4,
+      "winPercentage": 432,
+      "id": "bb1ab03c-6982-451d-8557-04aaca4f4cb5"
     }
   ],
   "siteData": {
-    "timeStamp": "2017-06-05T17:53:04.260Z",
+    "timeStamp": "2017-06-05T18:22:57.712Z",
     "err": false,
     "page": "front"
   }
