@@ -5,6 +5,7 @@
   "dependencies": {
     "casperjs": "^1.1.4",
     "cheerio": "^0.22.0",
+    "chromedriver": "^2.29.0",
     "express": "^4.15.3",
     "lowdb": "^0.16.2",
     "moment": "^2.18.1",
@@ -22,7 +23,9 @@
   },
   "author": "maxwell krause",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "selenium-webdriver": "^3.4.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maxwellsmart84/nodeScraper.git"
