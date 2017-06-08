@@ -1,13 +1,24 @@
 const rp = require('request-promise');
 const casper = require('casper').create();
 const cheerio = require('cheerio');
+const Horseman = require('node-horseman');
 
 const url = 'https://www.hotslogs.com/Sitewide/HeroAndMapStatistics';
 
-const daysOfTheWeekSelections {
+// const daysOfTheWeekSelections {
+//
+// }
 
+const pageMapping = {
+  dateAndTime: 'ctl00_MainContent_ComboBoxReplayDateTime'
 }
 
+async function selectDropDown(selection) {
+  const horseman = new Horseman();
+  horseman.open(url)
+  .click('span#ctl00_MainContent_ComboBoxReplayDateTime_Arrow')
+
+}
 
 
 // const baseFormData = {
@@ -31,27 +42,26 @@ const daysOfTheWeekSelections {
 
 async function selectDateTime(selection) {
   casper.start('https://www.hotslogs.com/Sitewide/HeroAndMapStatistics', () => {
-    this.fill('form#ctl01'. {
-      
+    casper.then(() => {
+      casper.waitForSelector('form#ctl101' ,() => {
+        this.fillSelectors('form#ctl101'), {
+          'input[name=MainContent_DropDownGameMode_ClientState]': selection,
+        } ,true);
+      });
     })
-  })
-    this.fill('form#ctl01')
-    this.evaluate(() => {
-
+    .then((data) => {
+      console.log(data);
+      return data;
     })
-  const input = document.querySelector('#ctl00_MainContent_ComboBoxReplayDateTime_Input');
-  input.setAttribute('')
-
-}
-async function chooseDropDown(dropDownName) {
-
+  });
 }
 
-casper.then(function(){
-    this.click("._time._hours");
-    this.evaluate(function() {
-        var form = document.querySelector('.form-control');
-        form.selectedIndex = 2;
-        $(form).change();
-    });
-});
+selectDateTime('Last 7 Days');
+// casper.then(function(){
+//     this.click("._time._hours");
+//     this.evaluate(function() {
+//         var form = document.querySelector('.form-control');
+//         form.selectedIndex = 2;
+//         $(form).change();
+//     });
+// });
