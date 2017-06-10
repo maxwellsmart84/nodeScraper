@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 // const phantom = require('phantom');
-const horseman = require('node-horseman');
+const Horseman = require('node-horseman');
 const url = 'https://www.hotslogs.com/Sitewide/HeroAndMapStatistics';
 
 
@@ -9,10 +9,25 @@ async function selectData() {
   let horseman = new Horseman();
   horseman.open(url)
     .click('#ctl00_MainContent_ComboBoxMapName_Arrow')
-    .count('input[type=checkbox]')
-    .log()
+    .visible('input[type=checkbox]')
+    .then((visible) => {
+      if (visible === true) {
+        console.log('true', visible, typeof visible);
+          horseman
+            .screenshot('./')
+            .text(visible)
+          .then((text, err) => {
+            if (text === '"Battlefield Eternity"') {
+              console.log('wow here');
+          }
+        })
+      }
+      return console.log('false')
+    })
     .close();
-  }
+}
+
+selectData();
 
 
 
