@@ -1,0 +1,5 @@
+# Scraping project
+
+
+This is just a scraper project I started to experiment with web scraping. I tried a couple libraries for node scraping and settled on Cheeroio for grabbing dom elements and Headless Horseman automation.  I found their promise based library very easy to chain and use.  I also tried out a simple data store using JSON, i liked it -although there is no data validation - WSIWYG. The site I was scraping was https://www.hotslogs.com/Default  I believe they are using https://www.telerik.com/ for their UI along with ASP.  I was unable to scrape directly but I was able to automate clicking with Headless Horseman to create custom queries using their UI.  I then used Cheerio to grab the correct tags on the page and then created a JSON payload for my simple storage.  This data was meant to create an API that others could use but halfway through my project, when I shared with a community sick of the ads on this site, they scolded me for scraping.  I had fun making this, it was a challenge and although incomplete - I learned a ton.  
+
